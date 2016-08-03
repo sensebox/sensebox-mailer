@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <title>Dein senseBox Skript</title>
+</head>
+<body>
+  <p>
+    Hallo {{ .user.firstname }} {{ .user.lastname }},
+  </p>
+  <p>
+    vielen Dank für die Registrierung deiner Messstation! Im Anhang findest du ein Arduino-Skript. Lade es herunter und lade es auf das Arduino, wie in unserem <a href="https://github.com/sensebox/oer/wiki/sensebox_home" target="_blank"><b>Wiki</b></a> beschrieben.
+  </p>
+  <p>Um die Eigenschaften deiner senseBox nachträglich zu ändern, wirst du immer nach einem API-Key gefragt. Deiner lautet: <b><{{ .user.apikey }}</b></p>
+  <br />
+  <p>Deine senseBox-ID lautet: {{ .box.id }}</p>
+  <p>Außerdem wurden die folgenden IDs für die Sensoren deiner Station generiert:</p>
+  <ul>{{ range .box.sensors }}
+      <li>{{ .title }} ({{ .type }}): {{ .id }}</li>
+  {{ end }}</ul>
+  <p>Du findest deine Station auf der Webseite unter der Adresse <a href="{{ .origin }}/explore/{{ .box.id }}" target="_blank">{{ .origin }}/explore/{{ .box.id }}</a>.</p>
+  <p>
+    Wenn Du Fragen hast schreib uns eine Mail an: <a href="mailto:support@sensebox.de?Subject=Hilfe%20bei%20der%20Einrichtung" target="_top">support@sensebox.de</a>
+  </p>
+  <p>
+    Viel Spaß wünscht dein senseBox Team
+  </p>
+</body>
+</html>

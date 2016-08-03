@@ -1,0 +1,14 @@
+{
+	"en": {
+		"registration": {
+			"fromName": "senseBox Registrations",
+			"subject": "Your senseBox registration"
+		}
+	},
+	"de": {
+		"registration": {
+			"fromName": "senseBox Registrierung",
+			"subject": "Deine senseBox Registrierung"
+		}
+	}
+}

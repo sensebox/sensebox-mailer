@@ -32,3 +32,5 @@ bin/*
 # Certificate files
 *.pem
 *.srl
+
+.vimrc
