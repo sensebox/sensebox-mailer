@@ -15,4 +15,4 @@ RUN gb build -ldflags "-s -w" all && \
 
 RUN apk del git && rm -rf /var/cache/apk/*
 
-CMD /sensebox-mailer/sensebox-mailer
+CMD ["/sensebox-mailer/sensebox-mailer"]
