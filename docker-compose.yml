@@ -12,7 +12,7 @@ services:
         (...)
         USFXPcOYAD3gp8v9ZRboCIm7
         -----END CERTIFICATE-----
-      SENSEBOX_MAILER_SERVER_KEY=: |-
+      SENSEBOX_MAILER_SERVER_KEY: |-
         -----BEGIN EC PRIVATE KEY-----
         MIHcAgEBBEIAu161aaZyjSsWwzlDC/gw7dh89c3wjMYfQELzCmINISOHzG6qtHFN
         (...)
@@ -29,4 +29,3 @@ services:
       SENSEBOX_MAILER_SMTP_USER: <your smtp server user>
       SENSEBOX_MAILER_SMTP_PASSWORD: <your smtp server password>
       SENSEBOX_MAILER_FROM_DOMAIN: <the domain you want your mails to originate from>
-      SENSEBOX_MAILER_FROM_NAME_PREFIX: <the name of the sender is prefixed with this value>
