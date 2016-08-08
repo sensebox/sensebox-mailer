@@ -8,24 +8,59 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"time"
 )
+
+type MailerJSONResponse struct {
+	Status  string `json:"status"`
+	Error   string `json:"error,omitempty"`
+	Request string `json:"request"`
+}
 
 func (mailer *senseBoxMailerServer) HandleSendRequest(w http.ResponseWriter, req *http.Request) {
 	decoder := json.NewDecoder(req.Body)
-	var parsedRequest MailRequest
-	err := decoder.Decode(&parsedRequest)
+	var parsedRequests []MailRequest
+	err := decoder.Decode(&parsedRequests)
 	if err != nil {
 		fmt.Println("error:", err)
 		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
 	}
 
-	err = SendMail(parsedRequest)
+	// init data structure for response
+
+	var jsonResponse []MailerJSONResponse
+
+	hasError := false
+
+	for _, request := range parsedRequests {
+		currResponse := MailerJSONResponse{
+			Status:  "ok",
+			Request: request.Language + "_" + request.Template + "_" + request.Recipient.Address + "_" + time.Now().Format(time.RFC3339),
+		}
+		err = SendMail(request)
+		if err != nil {
+			fmt.Println("error:", err)
+			currResponse.Status = "error"
+			currResponse.Error = err.Error()
+			hasError = true
+		}
+		jsonResponse = append(jsonResponse, currResponse)
+	}
+
+	jsonBytes, err := json.Marshal(jsonResponse)
 	if err != nil {
 		fmt.Println("error:", err)
-		http.Error(w, err.Error(), http.StatusBadRequest)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
 	}
 
-	fmt.Fprint(w, "ok")
+	if hasError == true {
+		w.WriteHeader(http.StatusBadRequest)
+	}
+	w.Header().Set("Content-Type", "application/json")
+
+	w.Write(jsonBytes)
 }
 
 func (mailer *senseBoxMailerServer) StartHTTPSServer() {

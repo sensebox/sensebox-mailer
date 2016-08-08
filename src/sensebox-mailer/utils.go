@@ -35,21 +35,23 @@ func getIntFromEnv(key string) (int, error) {
 }
 
 func getTranslation(language string, templateName string, key string) (string, error) {
-	if lang, ok := Translations[language]; ok {
-		if ok == false {
-			return "", errors.New("could not find language " + language)
-		}
-		if tpl, ok := lang.(map[string]interface{})[templateName]; ok {
-			if ok == false {
-				return "", errors.New("could not find template " + templateName + " in language " + language)
-			}
-			if value, ok := tpl.(map[string]interface{})[key]; ok {
-				if ok == false {
-					return "", errors.New("could not find key " + key + " in template " + templateName + " in language " + language)
-				}
+	var foundLang, foundTemplate, foundKey bool
+	if lang, foundLang := Translations[language]; foundLang {
+		if tpl, foundTemplate := lang.(map[string]interface{})[templateName]; foundTemplate {
+			if value, foundKey := tpl.(map[string]interface{})[key]; foundKey {
 				return value.(string), nil
 			}
 		}
 	}
-	return "", errors.New("shouldn't happen")
+	if foundKey == false {
+		return "", errors.New("could not find key " + key + " in template " + templateName + " in language " + language)
+	}
+	if foundTemplate == false {
+		return "", errors.New("could not find template " + templateName + " in language " + language)
+	}
+	if foundLang == false {
+		return "", errors.New("could not find language " + language)
+	}
+
+	return "", errors.New("Unexpected exception")
 }
