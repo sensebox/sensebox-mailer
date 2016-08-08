@@ -64,7 +64,7 @@ type MailRequest struct {
 	Recipient         MailRequestEmailAddress `json:"recipient"`
 	Payload           map[string]interface{}  `json:"payload"`
 	Attachment        *MailRequestAttachment  `json:"attachment,omitempty"`
-	DecodedAttachment MailRequestDecodedAttachment
+	DecodedAttachment *MailRequestDecodedAttachment
 	BuiltTemplate     string
 	EmailFrom         MailRequestEmailAddress
 	Subject           string
@@ -83,10 +83,11 @@ func (request *MailRequest) validateAndParseRequest() error {
 		if err != nil {
 			return err
 		}
-		request.DecodedAttachment = MailRequestDecodedAttachment{
+		decodedAttachment := MailRequestDecodedAttachment{
 			Filename: request.Attachment.Filename,
 			Contents: data,
 		}
+		request.DecodedAttachment = &decodedAttachment
 	}
 
 	// Fill FromAddress and SenderName
@@ -128,10 +129,12 @@ func SendMail(req MailRequest) error {
 	m.SetHeader("To", m.FormatAddress(req.Recipient.Address, req.Recipient.Name))
 	m.SetHeader("Subject", req.Subject)
 	m.SetBody("text/html", req.BuiltTemplate)
-	m.Attach(req.DecodedAttachment.Filename, gomail.SetCopyFunc(func(w io.Writer) error {
-		_, err := w.Write(req.DecodedAttachment.Contents)
-		return err
-	}))
+	if req.DecodedAttachment != nil {
+		m.Attach(req.DecodedAttachment.Filename, gomail.SetCopyFunc(func(w io.Writer) error {
+			_, err := w.Write(req.DecodedAttachment.Contents)
+			return err
+		}))
+	}
 
 	d := gomail.NewDialer(ConfigSmtpServer, ConfigSmtpPort, ConfigSmtpUser, ConfigSmtpPassword)
 
