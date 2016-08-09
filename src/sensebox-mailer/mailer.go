@@ -3,7 +3,9 @@ package main
 import (
 	"encoding/base64"
 	"io"
+	"log"
 	"net/mail"
+	"time"
 
 	"gopkg.in/gomail.v2"
 )
@@ -117,7 +119,7 @@ func (request *MailRequest) validateAndParseRequest() error {
 	return nil
 }
 
-func SendMail(req MailRequest) error {
+func (mailer *senseBoxMailerServer) SendMail(req MailRequest) error {
 
 	err := req.validateAndParseRequest()
 	if err != nil {
@@ -136,54 +138,47 @@ func SendMail(req MailRequest) error {
 		}))
 	}
 
-	d := gomail.NewDialer(ConfigSmtpServer, ConfigSmtpPort, ConfigSmtpUser, ConfigSmtpPassword)
+	mailer.Daemon <- m
 
-	if err := d.DialAndSend(m); err != nil {
-		return err
-	}
 	return nil
 }
 
-//func (mailer *senseBoxMailerServer) startMailerDaemon() chan *gomail.Message {
-//	ch := make(chan *gomail.Message)
+func (mailer *senseBoxMailerServer) startMailerDaemon() {
+	ch := make(chan *gomail.Message)
 
-//	go func() {
-//		d := gomail.NewDialer("smtp.example.com", 587, "user", "123456")
+	go func() {
+		d := gomail.NewDialer(ConfigSmtpServer, ConfigSmtpPort, ConfigSmtpUser, ConfigSmtpPassword)
 
-//		var s gomail.SendCloser
-//		var err error
-//		open := false
-//		for {
-//			select {
-//			case m, ok := <-ch:
-//				if !ok {
-//					return
-//				}
-//				if !open {
-//					if s, err = d.Dial(); err != nil {
-//						panic(err)
-//					}
-//					open = true
-//				}
-//				if err := gomail.Send(s, m); err != nil {
-//					log.Print(err)
-//				}
-//			// Close the connection to the SMTP server if no email was sent in
-//			// the last 30 seconds.
-//			case <-time.After(30 * time.Second):
-//				if open {
-//					if err := s.Close(); err != nil {
-//						panic(err)
-//					}
-//					open = false
-//				}
-//			}
-//		}
-//	}()
+		var s gomail.SendCloser
+		var err error
+		open := false
+		for {
+			select {
+			case m, ok := <-ch:
+				if !ok {
+					return
+				}
+				if !open {
+					if s, err = d.Dial(); err != nil {
+						panic(err)
+					}
+					open = true
+				}
+				if err := gomail.Send(s, m); err != nil {
+					log.Print(err)
+				}
+			// Close the connection to the SMTP server if no email was sent in
+			// the last 30 seconds.
+			case <-time.After(30 * time.Second):
+				if open {
+					if err := s.Close(); err != nil {
+						panic(err)
+					}
+					open = false
+				}
+			}
+		}
+	}()
 
-//	// Use the channel in your program to send emails.
-
-//	// Close the channel to stop the mail daemon.
-//	defer close(ch)
-//	return ch
-//}
+	mailer.Daemon = ch
+}

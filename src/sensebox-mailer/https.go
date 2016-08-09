@@ -9,6 +9,8 @@ import (
 	"net/http"
 	"os"
 	"time"
+
+	"github.com/honeybadger-io/honeybadger-go"
 )
 
 type MailerJSONResponse struct {
@@ -17,18 +19,24 @@ type MailerJSONResponse struct {
 	Request string `json:"request"`
 }
 
-func (mailer *senseBoxMailerServer) HandleSendRequest(w http.ResponseWriter, req *http.Request) {
+type mailRequestHandler func(http.ResponseWriter, *http.Request) (int, error)
+
+func (fn mailRequestHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	if status, err := fn(w, r); err != nil {
+		fmt.Println("error:", err)
+		http.Error(w, http.StatusText(status), status)
+	}
+}
+
+func (mailer *senseBoxMailerServer) requestHandler(w http.ResponseWriter, req *http.Request) (int, error) {
 	decoder := json.NewDecoder(req.Body)
 	var parsedRequests []MailRequest
 	err := decoder.Decode(&parsedRequests)
 	if err != nil {
-		fmt.Println("error:", err)
-		http.Error(w, err.Error(), http.StatusBadRequest)
-		return
+		return http.StatusBadRequest, err
 	}
 
 	// init data structure for response
-
 	var jsonResponse []MailerJSONResponse
 
 	hasError := false
@@ -38,7 +46,7 @@ func (mailer *senseBoxMailerServer) HandleSendRequest(w http.ResponseWriter, req
 			Status:  "ok",
 			Request: request.Language + "_" + request.Template + "_" + request.Recipient.Address + "_" + time.Now().Format(time.RFC3339),
 		}
-		err = SendMail(request)
+		err = mailer.SendMail(request)
 		if err != nil {
 			fmt.Println("error:", err)
 			currResponse.Status = "error"
@@ -50,9 +58,7 @@ func (mailer *senseBoxMailerServer) HandleSendRequest(w http.ResponseWriter, req
 
 	jsonBytes, err := json.Marshal(jsonResponse)
 	if err != nil {
-		fmt.Println("error:", err)
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
+		return http.StatusInternalServerError, err
 	}
 
 	if hasError == true {
@@ -61,6 +67,8 @@ func (mailer *senseBoxMailerServer) HandleSendRequest(w http.ResponseWriter, req
 	w.Header().Set("Content-Type", "application/json")
 
 	w.Write(jsonBytes)
+
+	return http.StatusOK, nil
 }
 
 func (mailer *senseBoxMailerServer) StartHTTPSServer() {
@@ -90,7 +98,7 @@ func (mailer *senseBoxMailerServer) StartHTTPSServer() {
 	tlsConfig.BuildNameToCertificate()
 	fmt.Println("built name to certificate")
 
-	http.HandleFunc("/", mailer.HandleSendRequest)
+	http.Handle("/", honeybadger.Handler(mailRequestHandler(mailer.requestHandler)))
 
 	httpServer := &http.Server{
 		Addr:      "0.0.0.0:3924",
@@ -99,5 +107,5 @@ func (mailer *senseBoxMailerServer) StartHTTPSServer() {
 	fmt.Println("configured server")
 
 	fmt.Println("starting server..")
-	log.Println(httpServer.ListenAndServeTLS("", ""))
+	log.Fatal(httpServer.ListenAndServeTLS("", ""))
 }
