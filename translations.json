@@ -9,6 +9,10 @@
 		"registration": {
 			"fromName": "senseBox Registrierung",
 			"subject": "Deine senseBox Registrierung"
+		},
+		"yeah": {
+			"fromName": "senseBox Yeah-Mail",
+			"subject": "Eine neue senseBox wurde registriert"
 		}
 	}
 }
