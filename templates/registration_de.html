@@ -13,12 +13,12 @@
   </p>
   <p>Um die Eigenschaften deiner senseBox nachträglich zu ändern, wirst du immer nach einem API-Key gefragt. Deiner lautet: <b>{{ .user.apikey }}</b></p>
   <br />
-  <p>Deine senseBox-ID lautet: {{ .box.id }}</p>
+  <p>Deine senseBox-ID lautet: {{ .box._id }}</p>
   <p>Außerdem wurden die folgenden IDs für die Sensoren deiner Station generiert:</p>
   <ul>{{ range .box.sensors }}
-      <li>{{ .title }} ({{ .type }}): {{ .id }}</li>
+      <li>{{ .title }} ({{ .sensorType }}): {{ ._id }}</li>
   {{ end }}</ul>
-  <p>Du findest deine Station auf der Webseite unter der Adresse <a href="{{ .origin }}/explore/{{ .box.id }}" target="_blank">{{ .origin }}/explore/{{ .box.id }}</a>.</p>
+  <p>Du findest deine Station auf der Webseite unter der Adresse <a href="{{ .origin }}/explore/{{ .box._id }}" target="_blank">{{ .origin }}/explore/{{ .box._id }}</a>.</p>
   <p>
     Wenn Du Fragen hast schreib uns eine Mail an: <a href="mailto:support@sensebox.de?Subject=Hilfe%20bei%20der%20Einrichtung" target="_top">support@sensebox.de</a>
   </p>

@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/base64"
+	"errors"
 	"io"
 	"log"
 	"net/mail"
@@ -73,6 +74,20 @@ type MailRequest struct {
 }
 
 func (request *MailRequest) validateAndParseRequest() error {
+	// check if the required keys are there
+	if request.Language == "" {
+		return errors.New("key 'lang' is required")
+	}
+	if request.Template == "" {
+		return errors.New("key 'template' is required")
+	}
+	if request.Recipient.Address == "" {
+		return errors.New("key 'address' of key 'recpipient' is required")
+	}
+	if request.Recipient.Name == "" {
+		return errors.New("key 'name' of key 'recpipient' is required")
+	}
+
 	// parse the Recipients address
 	_, err := addressParser.Parse(request.Recipient.Address)
 	if err != nil {

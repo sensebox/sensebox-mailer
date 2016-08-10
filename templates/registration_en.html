@@ -13,12 +13,12 @@
   </p>
   <p>To change settings of your senseBox afterwards, you will be asked for your API key. Your API key is: <b>{{ .user.apikey }}</b></p>
   <br />
-  <p>Your senseBox ID is: {{ .box.id }}</p>
+  <p>Your senseBox ID is: {{ .box._id }}</p>
   <p>In addition, the following IDs were generated for the sensors of your station:</p>
   <ul>{{ range .box.sensors }}
-      <li>{{ .title }} ({{ .type }}): {{ .id }}</li>
+      <li>{{ .title }} ({{ .sensorType }}): {{ ._id }}</li>
   {{ end }}</ul>
-  <p>You can find your senseBox at <a href="{{ .origin }}/explore/{{ .box.id }}" target="_blank">{{ .origin }}/explore/{{ .box.id }}</a>.</p>
+  <p>You can find your senseBox at <a href="{{ .origin }}/explore/{{ .box._id }}" target="_blank">{{ .origin }}/explore/{{ .box._id }}</a>.</p>
   <p>
     If you have any questions write us an email to: <a href="mailto:support@sensebox.de?Subject=Help%20me%20with%20my%20senseBox" target="_top">support@sensebox.de</a>
   </p>
