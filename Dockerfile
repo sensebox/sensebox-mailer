@@ -15,4 +15,6 @@ RUN gb build -ldflags "-s -w" all && \
 
 RUN apk del git && rm -rf /var/cache/apk/*
 
+EXPOSE 3924
+
 CMD ["/sensebox-mailer/sensebox-mailer"]
