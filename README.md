@@ -28,5 +28,6 @@ You should configure the following variables:
 | `SMTP_PORT` | the smtp server port | y |
 | `SMTP_USER` | the smtp server user | y |
 | `SMTP_PASSWORD` | the smtp server password | y |
-| `SMTP_DOMAIN` | the domain you are sending from | y |
+| `FROM_DOMAIN` | the domain you are sending from | y |
+| `HONEYBADGER_APIKEY` | api key for honeybadger error reporting |  |
 
