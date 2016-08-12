@@ -3,9 +3,11 @@ package main
 import (
 	"encoding/base64"
 	"errors"
+	"fmt"
 	"io"
 	"log"
 	"net/mail"
+	"strings"
 	"time"
 
 	"gopkg.in/gomail.v2"
@@ -86,6 +88,22 @@ func (request *MailRequest) validateAndParseRequest() error {
 	}
 	if request.Recipient.Name == "" {
 		return errors.New("key 'name' of key 'recpipient' is required")
+	}
+
+	// check if the supplied language is just an alias for another language
+	for avaliableLang := range Translations {
+		if strings.HasPrefix(request.Language, avaliableLang) {
+			fmt.Println("Converting " + request.Language + " to " + avaliableLang)
+			request.Language = avaliableLang
+			break
+		}
+	}
+
+	// check if the supplied language is available
+	_, present := Translations[request.Language]
+	if present == false {
+		fmt.Println("Language " + request.Language + " not found. Falling back to 'de'")
+		request.Language = "de"
 	}
 
 	// parse the Recipients address
