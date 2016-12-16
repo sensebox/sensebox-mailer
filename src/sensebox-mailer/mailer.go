@@ -3,9 +3,7 @@ package main
 import (
 	"encoding/base64"
 	"errors"
-	"fmt"
 	"io"
-	"log"
 	"net/mail"
 	"strings"
 	"time"
@@ -73,6 +71,7 @@ type MailRequest struct {
 	BuiltTemplate     string
 	EmailFrom         MailRequestEmailAddress
 	Subject           string
+	Id                string
 }
 
 func (request *MailRequest) validateAndParseRequest() error {
@@ -93,7 +92,7 @@ func (request *MailRequest) validateAndParseRequest() error {
 	// check if the supplied language is just an alias for another language
 	for avaliableLang := range Translations {
 		if strings.HasPrefix(request.Language, avaliableLang) {
-			fmt.Println("Converting " + request.Language + " to " + avaliableLang)
+			LogInfo("validateAndParseRequest", request.Id, "Converting "+request.Language+" to "+avaliableLang)
 			request.Language = avaliableLang
 			break
 		}
@@ -102,7 +101,7 @@ func (request *MailRequest) validateAndParseRequest() error {
 	// check if the supplied language is available
 	_, present := Translations[request.Language]
 	if present == false {
-		fmt.Println("Language " + request.Language + " not found. Falling back to 'de'")
+		LogInfo("validateAndParseRequest", request.Id, "Language "+request.Language+" not found. Falling back to 'de'")
 		request.Language = "de"
 	}
 
@@ -163,6 +162,7 @@ func (mailer *senseBoxMailerServer) SendMail(req MailRequest) error {
 	m.SetHeader("From", m.FormatAddress(req.EmailFrom.Address, req.EmailFrom.Name))
 	m.SetHeader("To", m.FormatAddress(req.Recipient.Address, req.Recipient.Name))
 	m.SetHeader("Subject", req.Subject)
+	m.SetHeader("senseBoxMailerInternalId", req.Id)
 	m.SetBody("text/html", req.BuiltTemplate)
 	if req.DecodedAttachment != nil {
 		m.Attach(req.DecodedAttachment.Filename, gomail.SetCopyFunc(func(w io.Writer) error {
@@ -170,7 +170,7 @@ func (mailer *senseBoxMailerServer) SendMail(req MailRequest) error {
 			return err
 		}))
 	}
-
+	LogInfo("SendMail", req.Id, "submitting mail to mailer daemon")
 	mailer.Daemon <- m
 
 	return nil
@@ -192,22 +192,28 @@ func (mailer *senseBoxMailerServer) startMailerDaemon() {
 					return
 				}
 				if !open {
+					LogInfo("mailerDaemon", "trying to open connection to SMTP server")
 					if s, err = d.Dial(); err != nil {
 						panic(err)
 					}
 					open = true
+					LogInfo("mailerDaemon", "successfully opened connection to SMTP server")
 				}
+				LogInfo("mailerDaemon", m.GetHeader("senseBoxMailerInternalId"), "trying to send mail")
 				if err := gomail.Send(s, m); err != nil {
-					log.Print(err)
+					LogInfo("mailerDaemon", "Error:", err)
 				}
+				LogInfo("mailerDaemon", m.GetHeader("senseBoxMailerInternalId"), "mail submitted to SMTP server")
 			// Close the connection to the SMTP server if no email was sent in
 			// the last 30 seconds.
 			case <-time.After(30 * time.Second):
 				if open {
+					LogInfo("mailerDaemon", "trying to close connection to SMTP server")
 					if err := s.Close(); err != nil {
 						panic(err)
 					}
 					open = false
+					LogInfo("mailerDaemon", "closed connection to SMTP server after 30 seconds of inactivity")
 				}
 			}
 		}

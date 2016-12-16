@@ -4,10 +4,10 @@ import (
 	"crypto/tls"
 	"crypto/x509"
 	"encoding/json"
-	"fmt"
 	"log"
 	"net/http"
 	"os"
+	"strconv"
 	"time"
 
 	"github.com/honeybadger-io/honeybadger-go"
@@ -23,16 +23,18 @@ type mailRequestHandler func(http.ResponseWriter, *http.Request) (int, error)
 
 func (fn mailRequestHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	if status, err := fn(w, r); err != nil {
-		fmt.Println("error:", err)
+		LogInfo("ServeHTTP", "Error:", err)
 		http.Error(w, http.StatusText(status), status)
 	}
 }
 
 func (mailer *senseBoxMailerServer) requestHandler(w http.ResponseWriter, req *http.Request) (int, error) {
+	LogInfo("requestHandler", "incoming request")
 	decoder := json.NewDecoder(req.Body)
 	var parsedRequests []MailRequest
 	err := decoder.Decode(&parsedRequests)
 	if err != nil {
+		LogInfo("requestHandler", "Error decoding JSON payload:", err)
 		return http.StatusBadRequest, err
 	}
 
@@ -40,15 +42,17 @@ func (mailer *senseBoxMailerServer) requestHandler(w http.ResponseWriter, req *h
 	var jsonResponse []MailerJSONResponse
 
 	hasError := false
+	requestTimestamp := time.Now().UTC().Unix()
 
 	for _, request := range parsedRequests {
+		request.Id = strconv.FormatInt(requestTimestamp, 36) + ";" + request.Language + ";" + request.Template + ";" + request.Recipient.Address
 		currResponse := MailerJSONResponse{
 			Status:  "ok",
-			Request: request.Language + "_" + request.Template + "_" + request.Recipient.Address + "_" + time.Now().Format(time.RFC3339),
+			Request: request.Id,
 		}
 		err = mailer.SendMail(request)
 		if err != nil {
-			fmt.Println("error:", err)
+			LogInfo("SendMail", "Error:", request.Id, err)
 			currResponse.Status = "error"
 			currResponse.Error = err.Error()
 			hasError = true
@@ -72,20 +76,20 @@ func (mailer *senseBoxMailerServer) requestHandler(w http.ResponseWriter, req *h
 }
 
 func (mailer *senseBoxMailerServer) StartHTTPSServer() {
-	fmt.Println("senseBox Mailer startup")
+	LogInfo("StartHTTPSServer", "senseBox Mailer startup")
 
 	clientCertPool := x509.NewCertPool()
 	if ok := clientCertPool.AppendCertsFromPEM(ConfigCaCertBytes); !ok {
 		log.Fatalln("Unable to add CA certificate to client certificate pool")
 		os.Exit(1)
 	}
-	fmt.Println("created client cert pool")
+	LogInfo("StartHTTPSServer", "created client cert pool")
 
 	myServerCertificate, err := tls.X509KeyPair(ConfigServerCertBytes, ConfigServerKeyBytes)
 	if err != nil {
 		log.Fatalln(err)
 	}
-	fmt.Println("imported server cert")
+	LogInfo("StartHTTPSServer", "imported server cert")
 
 	tlsConfig := &tls.Config{
 		ClientAuth:               tls.RequireAndVerifyClientCert,
@@ -96,7 +100,7 @@ func (mailer *senseBoxMailerServer) StartHTTPSServer() {
 	}
 
 	tlsConfig.BuildNameToCertificate()
-	fmt.Println("built name to certificate")
+	LogInfo("StartHTTPSServer", "built name to certificate")
 
 	http.Handle("/", honeybadger.Handler(mailRequestHandler(mailer.requestHandler)))
 
@@ -104,8 +108,8 @@ func (mailer *senseBoxMailerServer) StartHTTPSServer() {
 		Addr:      "0.0.0.0:3924",
 		TLSConfig: tlsConfig,
 	}
-	fmt.Println("configured server")
+	LogInfo("StartHTTPSServer", "configured server")
 
-	fmt.Println("starting server..")
+	LogInfo("StartHTTPSServer", "starting server..")
 	log.Fatal(httpServer.ListenAndServeTLS("", ""))
 }

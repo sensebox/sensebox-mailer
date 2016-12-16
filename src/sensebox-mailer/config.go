@@ -22,10 +22,8 @@ func initConfigFromEnv() {
 	honeybadgerApiKey, _ := getStringFromEnv("HONEYBADGER_APIKEY")
 	if honeybadgerApiKey != "" {
 		honeybadger.Configure(honeybadger.Configuration{APIKey: honeybadgerApiKey})
-		fmt.Println("enabled honeybadger integration")
+		LogInfo("startup", "enabled honeybadger integration")
 	}
-
-	honeybadger.Configure(honeybadger.Configuration{APIKey: "your api key"})
 
 	caCertBytes, caCertBytesErr := getBytesFromEnv("CA_CERT")
 	if caCertBytesErr != nil {

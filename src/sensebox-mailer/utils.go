@@ -2,9 +2,17 @@ package main
 
 import (
 	"errors"
+	"fmt"
 	"os"
 	"strconv"
+	"time"
 )
+
+func LogInfo(msgid string, msgs ...interface{}) {
+	logPrefix := time.Now().UTC().Format(time.RFC3339Nano) + " [" + msgid + "]"
+	msgs = append([]interface{}{logPrefix}, msgs...)
+	fmt.Println(msgs...)
+}
 
 func getStringFromEnv(key string) (string, error) {
 	str := os.Getenv(envPrefix + key)
