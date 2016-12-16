@@ -101,8 +101,8 @@ func (request *MailRequest) validateAndParseRequest() error {
 	// check if the supplied language is available
 	_, present := Translations[request.Language]
 	if present == false {
-		LogInfo("validateAndParseRequest", request.Id, "Language "+request.Language+" not found. Falling back to 'de'")
-		request.Language = "de"
+		LogInfo("validateAndParseRequest", request.Id, "Language "+request.Language+" not found. Falling back to 'en'")
+		request.Language = "en"
 	}
 
 	// parse the Recipients address
