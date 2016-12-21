@@ -130,7 +130,7 @@ func (request *MailRequest) validateAndParseRequest() error {
 		return err
 	}
 	request.EmailFrom = MailRequestEmailAddress{
-		Address: request.Template + "@" + ConfigFromDomain,
+		Address: "no-reply@" + ConfigFromDomain,
 		Name:    senderName,
 	}
 
