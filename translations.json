@@ -1,22 +1,38 @@
 {
 	"en": {
-		"registration": {
+		"newBox": {
 			"fromName": "senseBox Registrations",
 			"subject": "Your senseBox registration"
+		},
+		"newUser": {
+			"fromName": "openSenseMap User Registrations",
+			"subject": "Your openSenseMap registration"
 		},
 		"passwordReset": {
 			"fromName": "openSenseMap",
 			"subject": "Your password reset"
+		},
+		"newUserManagement": {
+			"fromName": "senseBox Team",
+			"subject": "News from senseBox"
 		}
 	},
 	"de": {
-		"registration": {
+		"newBox": {
 			"fromName": "senseBox Registrierung",
 			"subject": "Deine senseBox Registrierung"
+		},
+		"newUser": {
+			"fromName": "openSenseMap Benutzerregistrierung",
+			"subject": "Deine openSenseMap Registrierung"
 		},
 		"passwordReset": {
 			"fromName": "openSenseMap",
 			"subject": "Zurücksetzen deines Passworts"
+		},
+		"newUserManagement": {
+			"fromName": "senseBox Team",
+			"subject": "Gute Neuigkeiten zur openSenseMap"
 		}
 	}
 }
