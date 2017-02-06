@@ -9,19 +9,16 @@
     Hallo {{ .user.name }},
   </p>
   <p>
-    Jemand hat ein Zurücksetzen deines Passworts angefordert. Du kannst dein Passwort zurücksetzen, indem du auf den Link unten klickst.
+    Jemand hat eine Änderung deiner E-Mail Adresse angefordert. Dies kannst du tun, indem du auf den Link unten klickst.
   </p>
   <p>
-    <a href="{{ .origin }}/account/password-reset?token={{ .token }}" target="_blank">Passwort zurücksetzen</a><br />
+    <a href="{{ .origin }}/account/confirm-email?token={{ .token }}&email={{ .email }}" target="_blank">E-Mail bestätigen</a><br />
 	Wenn sich der Link nicht anklicken lässt, kannst du auch diese Adresse mit deinem Browser öffnen:
 	<br />
-	{{ .origin }}/account/password-reset?token={{ .token }}
+	{{ .origin }}/account/confirm-email?token={{ .token }}&email={{ .email }}
   </p>
   <p>
-    Falls du kein neues Passwort angefordert hast, ignoriere diese E-Mail.
-  </p>
-  <p>
-    Dein Passwort wird sich nicht änden bevor du auf den Link geklickt hast und dort ein neues vergeben hast.
+    Falls du keine Änderung deiner E-Mail Adresse angefordert hast, ignoriere diese E-Mail.
   </p>
   <p>
     Wenn Du Fragen hast schreib uns eine Mail an: <a href="mailto:support@sensebox.de?Subject=Password%20Reset" target="_top">support@sensebox.de</a>

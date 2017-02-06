@@ -15,6 +15,10 @@
 		"newUserManagement": {
 			"fromName": "senseBox Team",
 			"subject": "News from senseBox"
+		},
+		"confirmEmail": {
+			"fromName": "openSenseMap",
+			"subject": "openSenseMap E-Mail address confirmation"
 		}
 	},
 	"de": {
@@ -33,6 +37,10 @@
 		"newUserManagement": {
 			"fromName": "senseBox Team",
 			"subject": "Gute Neuigkeiten zur openSenseMap"
+		},
+		"confirmEmail": {
+			"fromName": "openSenseMap",
+			"subject": "openSenseMap Bestätigung deiner E-Mailadresse"
 		}
 	}
 }

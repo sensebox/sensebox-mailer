@@ -2,26 +2,23 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Your openSenseMap password reset</title>
+  <title>openSenseMap email address confirmation</title>
 </head>
 <body>
   <p>
     Hi {{ .user.name }},
   </p>
   <p>
-	Someone has requested a link to change your password. You can do this by clicking the link below.
+	Someone has requested to change your email address on {{ .origin }}. You can do this by clicking the link below.
   </p>
   <p>
-    <a href="{{ .origin }}/account/password-reset?token={{ .token }}" target="_blank">Reset password</a><br />
+    <a href="{{ .origin }}/account/confirm-email?token={{ .token }}&email={{ .email }}" target="_blank">Confirm email address</a><br />
 	If you are unable to click the link, you can also open this address with your web browser:
 	<br />
-	{{ .origin }}/users/password-reset?token={{ .token }}
+	{{ .origin }}/account/confirm-email?token={{ .token }}&email={{ .email }}
   </p>
   <p>
     If you didn't request this, please ignore this email.
-  </p>
-  <p>
-    Your password won't change until you access the link above and create a new one.
   </p>
   <p>
     If you have any questions write us an email to: <a href="mailto:support@sensebox.de?Subject=Password%20Reset" target="_top">support@sensebox.de</a>
