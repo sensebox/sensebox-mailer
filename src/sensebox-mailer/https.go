@@ -110,6 +110,6 @@ func (mailer *senseBoxMailerServer) StartHTTPSServer() {
 	}
 	LogInfo("StartHTTPSServer", "configured server")
 
-	LogInfo("StartHTTPSServer", "starting server..")
+	LogInfo("StartHTTPSServer", "starting server on address 0.0.0.0:3924")
 	log.Fatal(httpServer.ListenAndServeTLS("", ""))
 }
