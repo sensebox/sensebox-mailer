@@ -2,27 +2,14 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Your senseBox script</title>
+  <title>Your senseBox registration</title>
 </head>
 <body>
-  <p>
-    Hello {{ .user.name }},
-  </p>
-  <p>
-    Thank you for registration of your weather station! See your Arduino script in the attachment. Please download it and install it on your Arduino as you can see in our <a href="https://books.sensebox.de/home/en" target="_blank"><b>wiki</b></a>.
-  </p>
-  <br />
-  <p>Your senseBox ID is: {{ .box._id }}</p>
-  <p>In addition, the following IDs were generated for the sensors of your station:</p>
-  <ul>{{ range .box.sensors }}
-      <li>{{ .title }} ({{ .sensorType }}): {{ ._id }}</li>
-  {{ end }}</ul>
-  <p>You can find your senseBox at <a href="{{ .origin }}/explore/{{ .box._id }}" target="_blank">{{ .origin }}/explore/{{ .box._id }}</a>.</p>
-  <p>
-    If you have any questions write us an email to: <a href="mailto:support@sensebox.de?Subject=Help%20me%20with%20my%20senseBox" target="_top">support@sensebox.de</a>
-  </p>
-  <p>
-    The senseBox team wishes you a lot of fun with your new senseBox
-  </p>
+  <p>Hello {{ .user.name }},</p>
+  <p>your senseBox "{{ .box.name }}" is now registered at openSenseMap! 🎉 Thank you very much for contributing!</p>
+  <p>You can view your senseBox at this location:<br /><a href="{{ .origin }}/explore/{{ .box._id }}" target="_blank">{{ .origin }}/explore/{{ .box._id }}</a></p>
+  <p>Please note your personal <strong>Arduino Sketch</strong> in the attachment of this mail. You can find further instructions <strong><a href="https://home.books.sensebox.de/en/" target="_blank">here</a></strong>.</p>
+  <p>If you have any questions write us an email to: <a href="mailto:support@sensebox.de?Subject=Help%20me%20with%20my%20senseBox&body=Please%20include%20your%20senseBox-ID%20({{ .box._id }})%20in%20every%20message.%20Thank you!" target="_top">support@sensebox.de</a>.</p>
+  <p>The senseBox team wishes you a lot of fun with your new senseBox</p>
 </body>
 </html>
