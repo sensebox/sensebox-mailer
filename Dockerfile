@@ -8,13 +8,14 @@ COPY . /sensebox-mailer
 
 WORKDIR /sensebox-mailer
 
-RUN gb build -ldflags "-s -w" all && \
-  mv /sensebox-mailer/bin/sensebox-mailer /sensebox-mailer && \
-  rm -rf /sensebox-mailer/bin /sensebox-mailer/src /sensebox-mailer/pkg /sensebox-mailer/vendor && \
-  rm -rf /go
+RUN gb build -f -F -ldflags "-s -w" all
 
-RUN apk del git
+# Second stage
+FROM alpine
 
 EXPOSE 3924
 
-CMD ["/sensebox-mailer/sensebox-mailer"]
+COPY --from=0 /sensebox-mailer/bin/sensebox-mailer /sensebox-mailer
+COPY --from=0 /sensebox-mailer/templates /templates
+
+CMD ["/sensebox-mailer"]
