@@ -7,6 +7,10 @@
 		"passwordReset": {
 			"fromName": "openSenseMap",
 			"subject": "Your password reset"
+		},
+		"newSketch": {
+			"fromName": "openSenseMap",
+			"subject": "Your new Sketch"
 		}
 	},
 	"de": {
@@ -17,6 +21,10 @@
 		"passwordReset": {
 			"fromName": "openSenseMap",
 			"subject": "Zurücksetzen deines Passworts"
+		},
+		"newSketch": {
+			"fromName": "openSenseMap",
+			"subject": "Dein neuer Sketch"
 		}
 	}
 }
