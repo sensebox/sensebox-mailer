@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <title>Dein neuer Sketch</title>
+</head>
+<body>
+  <p>
+	Hallo {{ .user.name }},
+  </p>
+  <p>
+    du hast gerade das Modell oder die Sensoren deiner Wetterstation auf der openSenseMap geändert. Deswegen schicken wir dir hier einen aktualisierten Arduino-Sketch, den du im Anhang findest.
+  </p>
+  <p><b>Achtung!</b></p>
+  <p>
+    Der Sketch im Anhang befindet sich im Rohzustand. Das bedeutet:
+  </p>
+  <ul>
+    <li>Netzwerkeinstellungen für Wifi oder statische Ethernetkonfigurationen müssen vom alten Sketch übernommen werden.</li>
+	<li>Jegliche Änderungen für zum Beispiel: andere Sensoren müssen vom alten Sketch übernommen werden.</li>
+	<li>Jede andere Änderung ist nicht enthalten!</li>
+  </ul>
+  <br />
+  <p>Deine senseBox-ID lautet: {{ .box._id }}</p>
+  <p>Außerdem wurden die folgenden IDs für die Sensoren deiner Station generiert:</p>
+  <ul>{{ range .box.sensors }}
+      <li>{{ .title }} ({{ .sensorType }}): {{ ._id }}</li>
+  {{ end }}</ul>
+  <p>
+    Wenn Du Fragen hast schreib uns eine Mail an: <a href="mailto:support@sensebox.de?Subject=Neuer%20Sketch" target="_top">support@sensebox.de</a>
+  </p>
+  <p>
+    Viel Spaß wünscht dein senseBox Team
+  </p>
+</body>
+</html>

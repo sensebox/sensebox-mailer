@@ -19,6 +19,10 @@
 		"confirmEmail": {
 			"fromName": "openSenseMap",
 			"subject": "openSenseMap E-Mail address confirmation"
+		},
+		"newSketch": {
+			"fromName": "openSenseMap",
+			"subject": "Your new Sketch"
 		}
 	},
 	"de": {
@@ -41,6 +45,10 @@
 		"confirmEmail": {
 			"fromName": "openSenseMap",
 			"subject": "openSenseMap Bestätigung deiner E-Mailadresse"
+		},
+		"newSketch": {
+			"fromName": "openSenseMap",
+			"subject": "Dein neuer Sketch"
 		}
 	}
 }
