@@ -2,7 +2,11 @@
 	"en": {
 		"newBox": {
 			"fromName": "senseBox Registrations",
-			"subject": "Your senseBox registration"
+			"subject": "Your registration on openSenseMap"
+		},
+		"newBoxLuftdaten": {
+			"fromName": "senseBox Registrations",
+			"subject": "Your registration on openSenseMap"
 		},
 		"newUser": {
 			"fromName": "openSenseMap User Registrations",
@@ -28,7 +32,11 @@
 	"de": {
 		"newBox": {
 			"fromName": "senseBox Registrierung",
-			"subject": "Deine senseBox Registrierung"
+			"subject": "Deine Registrierung auf der openSenseMap"
+		},
+		"newBoxLuftdaten": {
+			"fromName": "senseBox Registrierung",
+			"subject": "Deine Registrierung auf der openSenseMap"
 		},
 		"newUser": {
 			"fromName": "openSenseMap Benutzerregistrierung",
