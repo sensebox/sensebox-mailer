@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <title>Deine Registrierung auf der openSenseMap</title>
+</head>
+<body>
+  <p>
+    Hallo {{ .user.firstname }} {{ .user.lastname }},
+  </p>
+  <p>
+    vielen Dank für die Registrierung deines Feinstaubsensors auf der openSenseMap! Damit deine Daten auch die openSenseMap erreichen, musst du noch deinen Feinstaubsensor konfigurieren. Eine Anleitung findest du unter <a href="https://osem.books.sensebox.de/de/luftdaten_feinstaub.html" target="_blank">https://osem.books.sensebox.de/de/luftdaten_feinstaub.html</a>.
+  </p>
+  <p>Deine senseBox-ID lautet: <b>{{ .box._id }}</b></p>
+  <p>Um die Eigenschaften deiner senseBox nachträglich zu ändern, wirst du immer nach einem API-Key gefragt. Deiner lautet: {{ .user.apikey }}</p>
+  <p>Du findest deinen Feinstaubsensor auf der Webseite unter der Adresse <a href="{{ .origin }}/explore/{{ .box._id }}" target="_blank">{{ .origin }}/explore/{{ .box._id }}</a>.</p>
+  <p>
+    Wenn Du Fragen hast schreib uns eine Mail an: <a href="mailto:support@sensebox.de?Subject=Hilfe%20bei%20der%20Einrichtung%20Feinstaub" target="_top">support@sensebox.de</a>
+  </p>
+  <p>
+    Viel Spaß wünscht dein senseBox Team
+  </p>
+</body>
+</html>

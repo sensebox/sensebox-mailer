@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Your registration on openSenseMap</title>
+</head>
+<body>
+  <p>
+    Hello {{ .user.firstname }} {{ .user.lastname }},
+  </p>
+  <p>
+    Thank you for registering your particulate matter sensor on openSenseMap! Now, you have to configure your device in order to submit measurements to the openSenseMap. You'll find instructions to to so <a href="https://osem.books.sensebox.de/en/luftdaten_feinstaub.html" target="_blank">https://osem.books.sensebox.de/en/luftdaten_feinstaub.html</a>.
+  </p>
+  <p>Your senseBox ID is: <b>{{ .box._id }}</b></p>
+  <p>To change settings of your device afterwards, you will be asked for your API key. Your API key is: {{ .user.apikey }}</p>
+  <p>You can find your device at <a href="{{ .origin }}/explore/{{ .box._id }}" target="_blank">{{ .origin }}/explore/{{ .box._id }}</a>.</p>
+  <p>
+    If you have any questions write us an email to: <a href="mailto:support@sensebox.de?Subject=Help%20me%20with%20my%20Luftdaten%20device" target="_top">support@sensebox.de</a>
+  </p>
+  <p>
+    The senseBox team wishes you a lot of fun
+  </p>
+</body>
+</html>
