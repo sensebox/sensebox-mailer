@@ -12,6 +12,10 @@
 			"fromName": "openSenseMap User Registrations",
 			"subject": "Your openSenseMap registration"
 		},
+		"deleteUser": {
+			"fromName": "openSenseMap",
+			"subject": "Your openSenseMap account has been deleted"
+		},
 		"passwordReset": {
 			"fromName": "openSenseMap",
 			"subject": "Your password reset"
@@ -41,6 +45,10 @@
 		"newUser": {
 			"fromName": "openSenseMap Benutzerregistrierung",
 			"subject": "Deine openSenseMap Registrierung"
+		},
+		"deleteUser": {
+			"fromName": "openSenseMap",
+			"subject": "Dein Account wurde gelöscht"
 		},
 		"passwordReset": {
 			"fromName": "openSenseMap",
