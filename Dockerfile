@@ -17,5 +17,6 @@ EXPOSE 3924
 
 COPY --from=build /sensebox-mailer/bin/sensebox-mailer /sensebox-mailer
 COPY --from=build /sensebox-mailer/templates /templates
+COPY --from=build /sensebox-mailer/translations.json /translations.json
 
 CMD ["/sensebox-mailer"]
