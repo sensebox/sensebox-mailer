@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+ <html lang="en">
+ <head>
+   <meta charset="UTF-8">
+   <title>Important news regarding openSenseMap</title>
+ </head>
+ <body>
+  <p>
+    Dear {{ .user.name }},
+  </p>
+  <p>
+    You are receiving this mail, because you've registered {{ if eq (len .boxes) 1 }} this weather station {{ else }} these weather stations {{ end }} on openSenseMap:
+    <ul>{{range .boxes}}
+      <li><a href="https://opensensemap.org/explore/{{._id}}" target="_blank">{{.name}}</a></li>
+    {{end}}</ul>
+  </p>
+  <p>
+    At this moment, the openSenseMap is being upgraded to user accounts for managing registered weather stations. Up until now, the authentication happened through using an API key. In the future, you can log in to the openSenseMap using your e-mail address and password.
+  </p>
+  <p>
+    This means for you: Your account with your email address remains unchanged, but you have to assign a password for yourself. With this change to a user management system, you are not only able to change your information such as mailing address and password easily, but you will be able to manage all your senseBoxes with your single account as well. It may happen that you receive this e-mail several times if you have registered several measuring stations with different e-mail addresses. In this case, you can contact us and we will then link your accounts.
+  </p>
+  <p>
+    To get started, you have to assign a password by clicking on this <a href="{{ .origin }}/account/password-reset?token={{ .token }}" target="_blank">link</a>.
+    <br />
+    If you are unable to click the link, you can also open this address with your web browser:
+    <br />
+    <br />
+    {{ .origin }}/account/password-reset?token={{ .token }}
+    <br />
+    <br />
+    This link is valid for 6 months.
+  </p>
+  <p>
+    Then you can log in with your e-mail address and your new password on the openSenseMap.
+  </p>
+  <p>
+    If you have any questions, feel free to write us an email to: <a href="mailto:support@sensebox.de?Subject=Usermanagement%20{{ .user.email }}" target="_top">support@sensebox.de</a>
+  </p>
+  <p>
+    Best wishes<br />your senseBox Team
+  </p>
+ </body>
+</html>

@@ -1,6 +1,6 @@
 FROM golang:1.8-alpine
 
-RUN apk add --update git
+RUN apk add --no-cache git
 
 RUN go get github.com/constabulary/gb/...
 
@@ -13,7 +13,7 @@ RUN gb build -ldflags "-s -w" all && \
   rm -rf /sensebox-mailer/bin /sensebox-mailer/src /sensebox-mailer/pkg /sensebox-mailer/vendor && \
   rm -rf /go
 
-RUN apk del git && rm -rf /var/cache/apk/*
+RUN apk del git
 
 EXPOSE 3924
 

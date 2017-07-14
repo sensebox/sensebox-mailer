@@ -1,8 +1,20 @@
 {
 	"en": {
-		"registration": {
+		"newBox": {
 			"fromName": "senseBox Registrations",
-			"subject": "Your senseBox registration"
+			"subject": "Your registration on openSenseMap"
+		},
+		"newBoxLuftdaten": {
+			"fromName": "senseBox Registrations",
+			"subject": "Your registration on openSenseMap"
+		},
+		"newUser": {
+			"fromName": "openSenseMap User Registrations",
+			"subject": "Your openSenseMap registration"
+		},
+		"deleteUser": {
+			"fromName": "openSenseMap",
+			"subject": "Your openSenseMap account has been deleted"
 		},
 		"registrationLuftdaten": {
 			"fromName": "senseBox Registrations",
@@ -12,15 +24,39 @@
 			"fromName": "openSenseMap",
 			"subject": "Your password reset"
 		},
+		"newUserManagement": {
+			"fromName": "senseBox Team",
+			"subject": "News from senseBox"
+		},
+		"confirmEmail": {
+			"fromName": "openSenseMap",
+			"subject": "openSenseMap E-Mail address confirmation"
+		},
 		"newSketch": {
 			"fromName": "openSenseMap",
 			"subject": "Your new Sketch"
+		},
+		"resendEmailConfirmation": {
+			"fromName": "openSenseMap",
+			"subject": "E-Mail address confirmation"
 		}
 	},
 	"de": {
-		"registration": {
+		"newBox": {
 			"fromName": "senseBox Registrierung",
-			"subject": "Deine senseBox Registrierung"
+			"subject": "Deine Registrierung auf der openSenseMap"
+		},
+		"newBoxLuftdaten": {
+			"fromName": "senseBox Registrierung",
+			"subject": "Deine Registrierung auf der openSenseMap"
+		},
+		"newUser": {
+			"fromName": "openSenseMap Benutzerregistrierung",
+			"subject": "Deine openSenseMap Registrierung"
+		},
+		"deleteUser": {
+			"fromName": "openSenseMap",
+			"subject": "Dein Account wurde gelöscht"
 		},
 		"registrationLuftdaten": {
 			"fromName": "senseBox Registrierung",
@@ -30,9 +66,21 @@
 			"fromName": "openSenseMap",
 			"subject": "Zurücksetzen deines Passworts"
 		},
+		"newUserManagement": {
+			"fromName": "senseBox Team",
+			"subject": "Gute Neuigkeiten von der openSenseMap"
+		},
+		"confirmEmail": {
+			"fromName": "openSenseMap",
+			"subject": "openSenseMap Bestätigung deiner E-Mailadresse"
+		},
 		"newSketch": {
 			"fromName": "openSenseMap",
 			"subject": "Dein neuer Sketch"
+		},
+		"resendEmailConfirmation": {
+			"fromName": "openSenseMap",
+			"subject": "Bestätigung deiner E-Mailadresse"
 		}
 	}
 }

@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+ <html lang="en">
+ <head>
+   <meta charset="UTF-8">
+   <title>Your user registration on openSenseMap</title>
+ </head>
+ <body>
+   <p>
+     Hi {{ .user.name }},
+   </p>
+   <p>
+     thank you for registering yourself on the openSenseMap platform. You'll find your profile at  <a href="{{ .origin}}/account">{{ .origin}}/account</a>. There, you can create new senseBoxes and change data and credentials.
+   </p>
+   <p>
+	 Please confirm your email address. Just click on this <a href="{{ .origin }}/account/confirm-email?email={{ .email }}&token={{ .token }}" target="_blank">link</a>.
+	 <br />
+	 If you are unable to click the link, you can also open this address with your web browser:
+	 <br />
+	 {{ .origin }}/account/confirm-email?email={{ .email }}&token={{ .token }}
+   </p>
+   <p>
+     If you have questions or suggestions please do not answer on this email directly, but feel free to send a mail to <a href="mailto:support@sensebox.de?Subject=User%20Registration%20{{ .email }}" target="_top">support@sensebox.de</a>.
+   </p>
+   <p>
+     Best wishes<br />your senseBox Team
+   </p>
+ </body>
+</html>

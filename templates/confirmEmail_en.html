@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>openSenseMap email address confirmation</title>
+</head>
+<body>
+  <p>
+    Hi {{ .user.name }},
+  </p>
+  <p>
+	Someone has requested to change your email address on {{ .origin }}. You can do this by clicking the link below.
+  </p>
+  <p>
+    <a href="{{ .origin }}/account/confirm-email?token={{ .token }}&email={{ .email }}" target="_blank">Confirm email address</a><br />
+	If you are unable to click the link, you can also open this address with your web browser:
+	<br />
+	{{ .origin }}/account/confirm-email?token={{ .token }}&email={{ .email }}
+  </p>
+  <p>
+    If you didn't request this, please ignore this email.
+  </p>
+  <p>
+    If you have any questions, feel free to write us an email to: <a href="mailto:support@sensebox.de?Subject=Email%20Confirmation%20for%20{{ .email }}" target="_top">support@sensebox.de</a>
+  </p>
+  <p>
+    Best wishes<br />your senseBox Team
+  </p>
+</body>
+</html>

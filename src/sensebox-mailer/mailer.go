@@ -83,10 +83,10 @@ func (request *MailRequest) validateAndParseRequest() error {
 		return errors.New("key 'template' is required")
 	}
 	if request.Recipient.Address == "" {
-		return errors.New("key 'address' of key 'recpipient' is required")
+		return errors.New("key 'address' of key 'recipient' is required")
 	}
 	if request.Recipient.Name == "" {
-		return errors.New("key 'name' of key 'recpipient' is required")
+		return errors.New("key 'name' of key 'recipient' is required")
 	}
 
 	// check if the supplied language is just an alias for another language
