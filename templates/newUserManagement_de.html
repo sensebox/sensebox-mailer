@@ -52,7 +52,7 @@
   <p>
     You are receiving this mail, because you've registered {{ if eq (len .boxes) 1 }} this weather station {{ else }} these weather stations {{ end }} on openSenseMap:
     <ul>{{range .boxes}}
-      <li><a href="{{ .origin }}/explore/{{._id}}" target="_blank">{{.name}}</a></li>
+      <li><a href="https://opensensemap.org/explore/{{._id}}" target="_blank">{{.name}}</a></li>
     {{end}}</ul>
   </p>
   <p>
