@@ -51,14 +51,14 @@ func getTranslation(language string, templateName string, key string) (string, e
 			}
 		}
 	}
-	if foundKey == false {
-		return "", errors.New("could not find key " + key + " in template " + templateName + " in language " + language)
-	}
 	if foundTemplate == false {
 		return "", errors.New("could not find template " + templateName + " in language " + language)
 	}
 	if foundLang == false {
 		return "", errors.New("could not find language " + language)
+	}
+	if foundKey == false {
+		return "", errors.New("could not find key " + key + " in template " + templateName + " in language " + language)
 	}
 
 	return "", errors.New("Unexpected exception")

@@ -11,7 +11,7 @@
   <p>
     You are receiving this mail, because you've registered {{ if eq (len .boxes) 1 }} this weather station {{ else }} these weather stations {{ end }} on openSenseMap:
     <ul>{{range .boxes}}
-      <li><a href="{{ .origin }}/explore/{{._id}}" target="_blank">{{.name}}</a></li>
+      <li><a href="https://opensensemap.org/explore/{{._id}}" target="_blank">{{.name}}</a></li>
     {{end}}</ul>
   </p>
   <p>
@@ -26,7 +26,7 @@
     If you are unable to click the link, you can also open this address with your web browser:
     <br />
     <br />
-    {{ .origin }}/users/password-reset?token={{ .token }}
+    {{ .origin }}/account/password-reset?token={{ .token }}
     <br />
     <br />
     This link is valid for 6 months.
