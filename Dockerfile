@@ -1,4 +1,4 @@
-FROM golang:1.8-alpine AS build
+FROM golang:1.8-alpine
 
 RUN apk add --no-cache git
 
@@ -15,8 +15,8 @@ FROM alpine
 
 EXPOSE 3924
 
-COPY --from=build /sensebox-mailer/bin/sensebox-mailer /sensebox-mailer
-COPY --from=build /sensebox-mailer/templates /templates
-COPY --from=build /sensebox-mailer/translations.json /translations.json
+COPY --from=0 /sensebox-mailer/bin/sensebox-mailer /sensebox-mailer
+COPY --from=0 /sensebox-mailer/templates /templates
+COPY --from=0 /sensebox-mailer/translations.json /translations.json
 
 CMD ["/sensebox-mailer"]
