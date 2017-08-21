@@ -1,4 +1,4 @@
-FROM golang:1.8-alpine
+FROM golang:1.8-alpine AS build
 
 RUN apk add --no-cache git
 
@@ -8,13 +8,15 @@ COPY . /sensebox-mailer
 
 WORKDIR /sensebox-mailer
 
-RUN gb build -ldflags "-s -w" all && \
-  mv /sensebox-mailer/bin/sensebox-mailer /sensebox-mailer && \
-  rm -rf /sensebox-mailer/bin /sensebox-mailer/src /sensebox-mailer/pkg /sensebox-mailer/vendor && \
-  rm -rf /go
+RUN gb build -f -F -ldflags "-s -w" all
 
-RUN apk del git
+# Second stage
+FROM alpine
 
 EXPOSE 3924
 
-CMD ["/sensebox-mailer/sensebox-mailer"]
+COPY --from=build /sensebox-mailer/bin/sensebox-mailer /sensebox-mailer
+COPY --from=build /sensebox-mailer/templates /templates
+COPY --from=build /sensebox-mailer/translations.json /translations.json
+
+CMD ["/sensebox-mailer"]
