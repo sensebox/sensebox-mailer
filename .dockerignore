@@ -21,3 +21,8 @@ bin/*
 .vimrc
 pkg
 dev_run.sh
+sensebox-mailer
+.vimrc
+client_env.yml
+server_env.yml
+.vscode

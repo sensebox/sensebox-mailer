@@ -1,20 +1,18 @@
-FROM golang:1.8-alpine
+FROM golang:1.9 as builder
 
-RUN apk add --no-cache git
+WORKDIR /go/src/sensebox-mailer
 
-RUN go get github.com/constabulary/gb/...
+COPY . ./
 
-COPY . /sensebox-mailer
+RUN CGO_ENABLED=0 go install -a -tags netgo -ldflags '-extldflags "-static"'
 
-WORKDIR /sensebox-mailer
 
-RUN gb build -ldflags "-s -w" all && \
-  mv /sensebox-mailer/bin/sensebox-mailer /sensebox-mailer && \
-  rm -rf /sensebox-mailer/bin /sensebox-mailer/src /sensebox-mailer/pkg /sensebox-mailer/vendor && \
-  rm -rf /go
+FROM scratch
 
-RUN apk del git
+COPY --from=builder /etc/ssl/certs/ /etc/ssl/certs
 
-EXPOSE 3924
+COPY --from=builder /go/bin/sensebox-mailer /sensebox-mailer
+COPY --from=builder /go/src/sensebox-mailer/templates /templates
+COPY --from=builder /go/src/sensebox-mailer/translations.json /translations.json
 
-CMD ["/sensebox-mailer/sensebox-mailer"]
+CMD ["/sensebox-mailer"]
