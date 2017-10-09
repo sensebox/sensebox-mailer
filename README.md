@@ -1,7 +1,6 @@
-sensebox-mailer (WIP)
-====================
+# sensebox-mailer
 
-This project can be built using [gb](getgb.io).
+This project uses `dep` and can be built using `go build`.
 
 In order to run it, you have to follow these steps:
 

@@ -28,6 +28,7 @@ _testmain.go
 
 # Build output
 bin/*
+sensebox-mailer
 
 # Certificate files
 *.pem
@@ -36,3 +37,5 @@ bin/*
 .vimrc
 client_env.yml
 server_env.yml
+
+.vscode
