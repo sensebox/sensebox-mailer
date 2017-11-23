@@ -4,8 +4,12 @@ WORKDIR /go/src/sensebox-mailer
 
 COPY . ./
 
-RUN CGO_ENABLED=0 go install -a -tags netgo -ldflags '-extldflags "-static"'
 
+
+RUN export branch=$(git rev-parse --abbrev-ref HEAD) &&  \
+  export ts=$(TZ=UTC git log --date=local --pretty=format:"%ct" -n 1) && \
+  export hash=$(TZ=UTC git log --date=local --pretty=format:"%h" -n 1) && \
+  CGO_ENABLED=0 go install -a -tags netgo -ldflags "-extldflags -static -X main.branch=$branch -X main.ts=$ts -X main.hash=$hash"
 
 FROM scratch
 
