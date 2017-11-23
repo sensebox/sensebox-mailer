@@ -185,6 +185,16 @@ func (mailer *senseBoxMailerServer) SendMail(req MailRequest) error {
 	return nil
 }
 
+type unencryptedAuth struct {
+	smtp.Auth
+}
+
+func (a unencryptedAuth) Start(server *smtp.ServerInfo) (string, []byte, error) {
+	s := *server
+	s.TLS = true
+	return a.Auth.Start(&s)
+}
+
 func (mailer *senseBoxMailerServer) startMailerDaemon() {
 	ch := make(chan *email.Email)
 
@@ -203,7 +213,7 @@ func (mailer *senseBoxMailerServer) startMailerDaemon() {
 					d = email.NewPool(
 						fmt.Sprintf("%s:%d", ConfigSmtpServer, ConfigSmtpPort),
 						4,
-						smtp.PlainAuth("", ConfigSmtpUser, ConfigSmtpPassword, ConfigSmtpServer),
+						unencryptedAuth{smtp.PlainAuth("", ConfigSmtpUser, ConfigSmtpPassword, ConfigSmtpServer)},
 					)
 					open = true
 					LogInfo("mailerDaemon", "successfully opened connection to SMTP server")
