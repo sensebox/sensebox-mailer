@@ -8,6 +8,11 @@
   version = "v0.1.0"
 
 [[projects]]
+  name = "github.com/lovego/email"
+  packages = ["."]
+  revision = "f4db5d7e012a9f37b4660d7d71018b137290eb8a"
+
+[[projects]]
   name = "github.com/pborman/uuid"
   packages = ["."]
   revision = "e790cca94e6cc75c7064b1332e63811d4aae1a53"
@@ -25,20 +30,9 @@
   packages = ["unix","windows"]
   revision = "82aafbf43bf885069dc71b7e7c2f9d7a614d47da"
 
-[[projects]]
-  branch = "v3"
-  name = "gopkg.in/alexcesaro/quotedprintable.v3"
-  packages = ["."]
-  revision = "2caba252f4dc53eaf6b553000885530023f54623"
-
-[[projects]]
-  name = "gopkg.in/gomail.v2"
-  packages = ["."]
-  revision = "81ebce5c23dfd25c6c67194b37d3dd3f338c98b1"
-
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "a09144fb3eee3cec4d456452d460fe25ef71992aad7e1f7c13168cd73a883086"
+  inputs-digest = "eae98da530a2273438b592abcc8052f98a385a8998dd38632d6bf17c07578ed1"
   solver-name = "gps-cdcl"
   solver-version = 1

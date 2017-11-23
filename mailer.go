@@ -1,14 +1,18 @@
 package main
 
 import (
+	"bytes"
 	"encoding/base64"
 	"errors"
-	"io"
+	"fmt"
 	"net/mail"
+	"net/smtp"
+	"net/textproto"
 	"strings"
 	"time"
 
-	"gopkg.in/gomail.v2"
+	// "github.com/jordan-wright/email"
+	"github.com/lovego/email"
 )
 
 /*
@@ -68,7 +72,7 @@ type MailRequest struct {
 	Payload           map[string]interface{}  `json:"payload"`
 	Attachment        *MailRequestAttachment  `json:"attachment,omitempty"`
 	DecodedAttachment *MailRequestDecodedAttachment
-	BuiltTemplate     string
+	BuiltTemplate     []byte
 	EmailFrom         MailRequestEmailAddress
 	Subject           string
 	Id                string
@@ -158,17 +162,22 @@ func (mailer *senseBoxMailerServer) SendMail(req MailRequest) error {
 		return err
 	}
 
-	m := gomail.NewMessage(gomail.SetCharset("UTF-8"))
-	m.SetHeader("From", m.FormatAddress(req.EmailFrom.Address, req.EmailFrom.Name))
-	m.SetHeader("To", m.FormatAddress(req.Recipient.Address, req.Recipient.Name))
-	m.SetHeader("Subject", req.Subject)
-	m.SetHeader("senseBoxMailerInternalId", req.Id)
-	m.SetBody("text/html", req.BuiltTemplate)
+	headers := textproto.MIMEHeader{}
+	headers.Add("senseBoxMailerInternalId", req.Id)
+
+	m := &email.Email{
+		To:      []string{fmt.Sprintf("%s <%s>", req.Recipient.Name, req.Recipient.Address)},
+		From:    fmt.Sprintf("%s <%s>", req.EmailFrom.Name, req.EmailFrom.Address),
+		Subject: req.Subject,
+		HTML:    req.BuiltTemplate,
+		Headers: headers,
+	}
+
 	if req.DecodedAttachment != nil {
-		m.Attach(req.DecodedAttachment.Filename, gomail.SetCopyFunc(func(w io.Writer) error {
-			_, err := w.Write(req.DecodedAttachment.Contents)
+		_, err := m.Attach(bytes.NewReader(req.DecodedAttachment.Contents), req.DecodedAttachment.Filename, "text/plain")
+		if err != nil {
 			return err
-		}))
+		}
 	}
 	LogInfo("SendMail", req.Id, "submitting mail to mailer daemon")
 	mailer.Daemon <- m
@@ -177,13 +186,11 @@ func (mailer *senseBoxMailerServer) SendMail(req MailRequest) error {
 }
 
 func (mailer *senseBoxMailerServer) startMailerDaemon() {
-	ch := make(chan *gomail.Message)
+	ch := make(chan *email.Email)
 
 	go func() {
-		d := gomail.NewDialer(ConfigSmtpServer, ConfigSmtpPort, ConfigSmtpUser, ConfigSmtpPassword)
 
-		var s gomail.SendCloser
-		var err error
+		var d *email.Pool
 		open := false
 		for {
 			select {
@@ -193,25 +200,25 @@ func (mailer *senseBoxMailerServer) startMailerDaemon() {
 				}
 				if !open {
 					LogInfo("mailerDaemon", "trying to open connection to SMTP server")
-					if s, err = d.Dial(); err != nil {
-						panic(err)
-					}
+					d = email.NewPool(
+						fmt.Sprintf("%s:%d", ConfigSmtpServer, ConfigSmtpPort),
+						4,
+						smtp.PlainAuth("", ConfigSmtpUser, ConfigSmtpPassword, ConfigSmtpServer),
+					)
 					open = true
 					LogInfo("mailerDaemon", "successfully opened connection to SMTP server")
 				}
-				LogInfo("mailerDaemon", m.GetHeader("senseBoxMailerInternalId"), "trying to send mail")
-				if err := gomail.Send(s, m); err != nil {
-					LogInfo("mailerDaemon", "Error:", err)
+				LogInfo("mailerDaemon", m.Headers.Get("senseBoxMailerInternalId"), "trying to send mail")
+				if err := d.Send(m, 5*time.Second); err != nil {
+					LogInfo("mailerDaemon", "Error for", m.Headers.Get("senseBoxMailerInternalId"), err)
 				}
-				LogInfo("mailerDaemon", m.GetHeader("senseBoxMailerInternalId"), "mail submitted to SMTP server")
+				LogInfo("mailerDaemon", m.Headers.Get("senseBoxMailerInternalId"), "mail submitted to SMTP server")
 			// Close the connection to the SMTP server if no email was sent in
 			// the last 30 seconds.
 			case <-time.After(30 * time.Second):
 				if open {
 					LogInfo("mailerDaemon", "trying to close connection to SMTP server")
-					if err := s.Close(); err != nil {
-						panic(err)
-					}
+					d.Close()
 					open = false
 					LogInfo("mailerDaemon", "closed connection to SMTP server after 30 seconds of inactivity")
 				}

@@ -4,12 +4,12 @@ import (
 	"bytes"
 )
 
-func prepareMailBody(templateName, language string, payload interface{}) (string, error) {
+func prepareMailBody(templateName, language string, payload interface{}) ([]byte, error) {
 	var strBuffer bytes.Buffer
 	err := templates.ExecuteTemplate(&strBuffer, templateName+"_"+language+".html", payload)
 	if err != nil {
-		return "", err
+		return []byte{}, err
 	}
-	str := strBuffer.String()
+	str := strBuffer.Bytes()
 	return str, nil
 }
