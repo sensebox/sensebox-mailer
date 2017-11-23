@@ -39,3 +39,5 @@ client_env.yml
 server_env.yml
 
 .vscode
+
+debug

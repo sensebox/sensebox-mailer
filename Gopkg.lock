@@ -16,14 +16,14 @@
 [[projects]]
   name = "github.com/shirou/gopsutil"
   packages = ["internal/common","load","mem"]
-  revision = "114c78c777eb86b58e40910cbd3fc451829c366d"
-  version = "v2.17.07"
+  revision = "48fc5612898a1213aa5d6a0fb2d4f7b968e898fb"
+  version = "v2.17.10"
 
 [[projects]]
   branch = "master"
   name = "golang.org/x/sys"
   packages = ["unix","windows"]
-  revision = "7ddbeae9ae08c6a06a59597f0c9edbc5ff2444ce"
+  revision = "82aafbf43bf885069dc71b7e7c2f9d7a614d47da"
 
 [[projects]]
   branch = "v3"
