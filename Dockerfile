@@ -20,7 +20,5 @@ FROM scratch
 COPY --from=builder /etc/ssl/certs/ /etc/ssl/certs
 
 COPY --from=builder /go/bin/sensebox-mailer /sensebox-mailer
-# COPY --from=builder /go/src/${IMPORTPATH}/templates /templates
-# COPY --from=builder /go/src/${IMPORTPATH}/templates/templates.json /templates.json
 
 CMD ["/sensebox-mailer"]
