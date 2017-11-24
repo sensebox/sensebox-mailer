@@ -28,7 +28,6 @@ _testmain.go
 
 # Build output
 bin/*
-sensebox-mailer
 
 # Certificate files
 *.pem

@@ -19,6 +19,12 @@
   version = "v1.1"
 
 [[projects]]
+  name = "github.com/rakyll/statik"
+  packages = ["fs"]
+  revision = "fd36b3595eb2ec8da4b8153b107f7ea08504899d"
+  version = "v0.1.1"
+
+[[projects]]
   name = "github.com/shirou/gopsutil"
   packages = ["internal/common","load","mem"]
   revision = "48fc5612898a1213aa5d6a0fb2d4f7b968e898fb"
@@ -33,6 +39,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "eae98da530a2273438b592abcc8052f98a385a8998dd38632d6bf17c07578ed1"
+  inputs-digest = "a4e52a889f496284e9c3bb9c4c959a5face9451f64e44bedb2889cea4fca3c36"
   solver-name = "gps-cdcl"
   solver-version = 1
