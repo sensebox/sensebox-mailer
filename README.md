@@ -20,13 +20,13 @@ You should configure the following variables:
 
 | key | comment | optional |
 |-----|---------|---------------------------------------------------------------------------|
-| `CA_CERT` | the certificate of your CA. Server and client should be signed by this CA | y |
-| `SERVER_CERT` | the server certificate | y |
-| `SERVER_KEY` | the key of the server certificate | y |
-| `SMTP_SERVER` | the smtp server address | y |
-| `SMTP_PORT` | the smtp server port | y |
-| `SMTP_USER` | the smtp server user | y |
-| `SMTP_PASSWORD` | the smtp server password | y |
-| `FROM_DOMAIN` | the domain you are sending from | y |
-| `HONEYBADGER_APIKEY` | api key for honeybadger error reporting |  |
+| `CA_CERT` | the certificate of your CA. Server and client should be signed by this CA |  |
+| `SERVER_CERT` | the server certificate |  |
+| `SERVER_KEY` | the key of the server certificate |  |
+| `SMTP_SERVER` | the smtp server address |  |
+| `SMTP_PORT` | the smtp server port |  |
+| `SMTP_USER` | the smtp server user |  |
+| `SMTP_PASSWORD` | the smtp server password |  |
+| `FROM_DOMAIN` | the domain you are sending from |  |
+| `HONEYBADGER_APIKEY` | api key for honeybadger error reporting | y |
 
