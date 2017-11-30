@@ -176,6 +176,10 @@ func (p *Process) Rlimit() ([]RlimitStat, error) {
 	var rlimit []RlimitStat
 	return rlimit, common.ErrNotImplementedError
 }
+func (p *Process) RlimitUsage(_ bool) ([]RlimitStat, error) {
+	var rlimit []RlimitStat
+	return rlimit, common.ErrNotImplementedError
+}
 func (p *Process) IOCounters() (*IOCountersStat, error) {
 	k, err := p.getKProc()
 	if err != nil {
@@ -200,8 +204,8 @@ func (p *Process) NumThreads() (int32, error) {
 
 	return k.Numthreads, nil
 }
-func (p *Process) Threads() (map[string]string, error) {
-	ret := make(map[string]string, 0)
+func (p *Process) Threads() (map[int32]*cpu.TimesStat, error) {
+	ret := make(map[int32]*cpu.TimesStat)
 	return ret, common.ErrNotImplementedError
 }
 func (p *Process) Times() (*cpu.TimesStat, error) {

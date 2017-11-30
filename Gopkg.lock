@@ -8,37 +8,37 @@
   version = "v0.1.0"
 
 [[projects]]
+  name = "github.com/lovego/email"
+  packages = ["."]
+  revision = "f4db5d7e012a9f37b4660d7d71018b137290eb8a"
+
+[[projects]]
   name = "github.com/pborman/uuid"
   packages = ["."]
   revision = "e790cca94e6cc75c7064b1332e63811d4aae1a53"
   version = "v1.1"
 
 [[projects]]
+  name = "github.com/rakyll/statik"
+  packages = ["fs"]
+  revision = "fd36b3595eb2ec8da4b8153b107f7ea08504899d"
+  version = "v0.1.1"
+
+[[projects]]
   name = "github.com/shirou/gopsutil"
   packages = ["internal/common","load","mem"]
-  revision = "114c78c777eb86b58e40910cbd3fc451829c366d"
-  version = "v2.17.07"
+  revision = "48fc5612898a1213aa5d6a0fb2d4f7b968e898fb"
+  version = "v2.17.10"
 
 [[projects]]
   branch = "master"
   name = "golang.org/x/sys"
   packages = ["unix","windows"]
-  revision = "7ddbeae9ae08c6a06a59597f0c9edbc5ff2444ce"
-
-[[projects]]
-  branch = "v3"
-  name = "gopkg.in/alexcesaro/quotedprintable.v3"
-  packages = ["."]
-  revision = "2caba252f4dc53eaf6b553000885530023f54623"
-
-[[projects]]
-  name = "gopkg.in/gomail.v2"
-  packages = ["."]
-  revision = "81ebce5c23dfd25c6c67194b37d3dd3f338c98b1"
+  revision = "82aafbf43bf885069dc71b7e7c2f9d7a614d47da"
 
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "a09144fb3eee3cec4d456452d460fe25ef71992aad7e1f7c13168cd73a883086"
+  inputs-digest = "a4e52a889f496284e9c3bb9c4c959a5face9451f64e44bedb2889cea4fca3c36"
   solver-name = "gps-cdcl"
   solver-version = 1
