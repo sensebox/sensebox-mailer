@@ -40,3 +40,7 @@ server_env.yml
 .vscode
 
 debug
+
+# certificates
+out
+docker-compose.override.yml
