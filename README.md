@@ -16,7 +16,7 @@ This project is the mailer used by the [openSenseMap-API](https://github.com/sen
 
 1. Create new html files in `templates`. Ideally named `yourNewTemplate_en.html` or `yourNewTemplate_de.html`. Please always create both files for german (`_de.html`) and english (`_en.html`).
 1. Edit `templates/templates.json` and add your template to the array.
-1. Run `statik -src=templates`
+1. Run `statik -src=templates -f`
 1. Compile the project `go build -o sensebox-mailer cmd/sensebox-mailer/*.go`
 
 ### Running
@@ -34,7 +34,7 @@ A good starting point for a bash script for development usage could look like th
 
 set -e
 
-statik -src=templates
+statik -src=templates -f
 go build -o sensebox-mailer cmd/sensebox-mailer/*.go
 
 export SENSEBOX_MAILER_SERVER_CERT=$(cat out/mailer_server.crt)
@@ -79,7 +79,7 @@ An example payload should look like this:
       ...
     ]
 
-The root of the JSON payload should always be an array containing single requests. Required keys for the single requests are `template`, `lang`, `recipient` and `payload`. The key `attachment` is optional.
+The root of the JSON payload should always be an `array` containing single requests. Required keys for the single requests are `template`, `lang`, `recipient` and `payload`. The key `attachment` is optional.
 
 ## Production use
 
