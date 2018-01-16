@@ -59,9 +59,9 @@ An example payload should look like this:
 
     [
       {
-        "template": "registration", // required. The template you want to render
-        "lang": "en",               // required. the language to use
-        "recipient": {
+        "template": "registration",       // required. The template you want to render
+        "lang": "en",                     // required. the language to use
+        "recipient": {                    // required. sould have the keys address and name
           "address": "email@address.com",
           "name": "Philip J. Fry"
         },
@@ -71,9 +71,9 @@ An example payload should look like this:
             "boing": "boom"
           }
         },
-        "attachment": {
-          "filename": "senseBox.ino",
-          "contents": "<file contents in base64>"
+        "attachment": {               // optional. should contain keys filename and contents
+          "filename": "senseBox.ino", // filename of the attachment
+          "contents": "<file contents in base64>" // file contents encoded in base64
         }
       },
       ...
