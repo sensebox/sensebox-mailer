@@ -1,6 +1,87 @@
 # sensebox-mailer
 
-This project uses `dep` and can be built using `go build`.
+This project is the mailer used by the [openSenseMap-API](https://github.com/sensebox/openSenseMap-API) and other services in the openSenseMap stack. It it written in Golang and thus can be compiled into a single binary.
+
+## Development
+
+- Clone the project into your GOPATH.
+- Install certstrap (`go get -u github.com/square/certstrap`)
+- Install statik (`go get -u github.com/rakyll/statik`)
+
+### Compilation
+
+    go build -o sensebox-mailer cmd/sensebox-mailer/*.go
+
+### Adding new mail templates
+
+1. Create new html files in `templates`. Ideally named `yourNewTemplate_en.html` or `yourNewTemplate_de.html`. Please always create both files for german (`_de.html`) and english (`_en.html`).
+1. Edit `templates/templates.json` and add your template to the array.
+1. Run `statik -src=templates`
+1. Compile the project `go build -o sensebox-mailer cmd/sensebox-mailer/*.go`
+
+### Running
+
+The mailer relies on some environment variables for configuration. You can find these at the bottom of the README. Before running, you should generate certificates (`./genCerts.sh`).
+
+A good mailserver for development and testing is [mailhog](https://github.com/mailhog/MailHog). You should start an instance of it
+
+    docker run -d --name mailhog -p "1025:1025" -p "8025:8025" mailhog/mailhog
+
+A good starting point for a bash script for development usage could look like this:
+
+```bash
+#!/bin/bash
+
+set -e
+
+statik -src=templates
+go build -o sensebox-mailer cmd/sensebox-mailer/*.go
+
+export SENSEBOX_MAILER_SERVER_CERT=$(cat out/mailer_server.crt)
+export SENSEBOX_MAILER_SERVER_KEY=$(cat out/mailer_server.key)
+export SENSEBOX_MAILER_CA_CERT=$(cat out/openSenseMapCA.crt)
+export SENSEBOX_MAILER_SMTP_SERVER=localhost
+export SENSEBOX_MAILER_SMTP_PORT=1025
+export SENSEBOX_MAILER_SMTP_USER=mailhog
+export SENSEBOX_MAILER_SMTP_PASSWORD=mailhog
+export SENSEBOX_MAILER_FROM_DOMAIN=mailertest.sensebox
+export SENSEBOX_MAILER_FROM_NAME_PREFIX=mailer
+# export SENSEBOX_MAILER_HONEYBADGER_APIKEY=aaaaaaaa
+
+./sensebox-mailer
+```
+
+## HTTP interface
+
+Upon running the compiled binary, the mailer will expose a HTTP interface running on port 3924. Clients can send mails by sending POST requests to `/` with JSON payload. Clients should authenticate using TLS client certificates.
+
+An example payload should look like this:
+
+    [
+      {
+        "template": "registration", // required. The template you want to render
+        "lang": "en",               // required. the language to use
+        "recipient": {
+          "address": "email@address.com",
+          "name": "Philip J. Fry"
+        },
+        "payload": {
+          "foo": "bar",
+          "baz": {
+            "boing": "boom"
+          }
+        },
+        "attachment": {
+          "filename": "senseBox.ino",
+          "contents": "<file contents in base64>"
+        }
+      },
+      ...
+    ]
+
+The root of the JSON payload should always be an array containing single requests. Required keys for the single requests are `template`, `lang`, `recipient` and `payload`. The key `attachment` is optional.
+
+## Production use
 
 In order to run it, you have to follow these steps:
 
@@ -34,4 +115,3 @@ You should configure the following variables:
 | `SMTP_PASSWORD` | the smtp server password |  |
 | `FROM_DOMAIN` | the domain you are sending from |  |
 | `HONEYBADGER_APIKEY` | api key for honeybadger error reporting | y |
-
