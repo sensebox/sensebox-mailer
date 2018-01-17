@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <title>Sensor Benachrichtigung: Schwellenwert erreicht!</title>
+</head>
+<body>
+  <p>
+    Hallo {{ .user.name }},
+  </p>
+  <p>
+    Dein eingestellter Schwellenwert von <span style="color: red; font-weight: bold;">{{ .data.operator }}{{ .data.value }}{{ .data.unit}}</span> wurde erreicht.
+  </p>
+  <p>
+    Der stündliche Durchschnittswert für den Zeitraum {{ .data.from }} - {{ .data.to }} ist: {{ .data.average }}{{ .data.unit }}  
+    <br /><b>Die Uhrzeit wird in <a href="https://de.wikipedia.org/wiki/Koordinierte_Weltzeit" target="_blank">UTC</a> angegeben.</b>
+  </p>
+  <p>
+    Insgesamt wurden {{ .data.numberOfMeasurements}} Messwerte für die Berechnung genutzt.Die genutzten Werte kannst du hier einsehen:
+    <br /><a href="{{ .request }}" target="_blank">{{ .request }}</a>
+  </p>
+  <p>Du findest deine Station auf der openSenseMap unter dieser Adresse:<br /><a href="{{ .origin }}/explore/{{ .box._id }}" target="_blank">{{ .origin }}/explore/{{ .box._id }}</a></p>
+  <p>Wenn Du Fragen hast schreib uns eine Mail an: <a href="mailto:support@sensebox.de" target="_top">support@sensebox.de</a>.</p>
+  <p>
+    Viele Grüße,<br />dein senseBox Team
+  </p>
+</body>
+</html>

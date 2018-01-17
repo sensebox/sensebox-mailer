@@ -94,5 +94,17 @@
 		"template": "resendEmailConfirmation",
 		"fromName": "openSenseMap",
 		"subject": "Bestätigung deiner E-Mailadresse"
+	},
+	{
+		"language": "de",
+		"template": "sensorAlertNotification",
+		"fromName": "openSenseMap",
+		"subject": "Sensor Benachrichtigung"
+	},
+	{
+		"language": "en",
+		"template": "sensorAlertNotification",
+		"fromName": "openSenseMap",
+		"subject": "Sensor Alert"
 	}
 ]

@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Sensor Notification: threshold reached!</title>
+</head>
+<body>
+  <p>
+    Hi {{ .user.name }},
+  </p>
+  <p>
+    Your registered threshold value for your {{ .data.phenomenon}} of <span style="color: red; font-weight: bold;">{{ .data.operator }}{{ .data.value }}{{ .data.unit}}</span> was reached.
+  </p>
+  <p>
+    The hourly average value for the period of time {{ .data.from }} - {{ .data.to }} is: {{ .data.average }}{{ .data.unit }}
+    <br /><b>The time is provided as<a href="https://en.wikipedia.org/wiki/Coordinated_Universal_Time" target="_blank">UTC</a></b>.
+  </p>
+  <p>
+    Altogether {{ .data.numberOfMeasurements}} measurements were used for the calculation. The raw measurements can be found here: 
+    <br /><a href="{{ .request }}" target="_blank">{{ .request }}</a>
+  </p>
+  <p>
+    You can view the senseBox at this location:<br /><a href="{{ .origin }}/explore/{{ .box._id }}" target="_blank">{{ .origin }}/explore/{{ .box._id }}</a>
+  </p>
+  <p>If you have any questions, feel free to write us an email to: <a href="mailto:support@sensebox.de" target="_top">support@sensebox.de</a>.</p>
+  <p>
+    Best wishes<br />your senseBox Team
+  </p>
+</body>
+</html>
