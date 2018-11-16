@@ -1,6 +1,6 @@
 # sensebox-mailer
 
-This project is the mailer used by the [openSenseMap-API](https://github.com/sensebox/openSenseMap-API) and other services in the openSenseMap stack. It it written in Golang and thus can be compiled into a single binary.
+This project is the mailer used by the [openSenseMap-API](https://github.com/sensebox/openSenseMap-API) and other services in the openSenseMap stack. It is written in Golang and thus can be compiled into a single binary.
 
 ## Development
 
@@ -16,7 +16,7 @@ This project is the mailer used by the [openSenseMap-API](https://github.com/sen
 
 1. Create new html files in `templates`. Ideally named `yourNewTemplate_en.html` or `yourNewTemplate_de.html`. Please always create both files for german (`_de.html`) and english (`_en.html`).
 1. Edit `templates/templates.json` and add your template to the array.
-1. Run `statik -src=templates`
+1. Run `statik -src=templates -f`
 1. Compile the project `go build -o sensebox-mailer cmd/sensebox-mailer/*.go`
 
 ### Running
