@@ -21,4 +21,11 @@ export SENSEBOX_MAILER_SMTP_PASSWORD=smtppassword
 export SENSEBOX_MAILER_FROM_DOMAIN=sensebox.de
 export SENSEBOX_MAILER_FROM_NAME_PREFIX=senseBox
 
+function cleanup() {
+  echo 'cleanup!'
+  docker stop mailhog
+  docker rm mailhog
+}
+trap cleanup EXIT
+
 ./sensebox-mailer
