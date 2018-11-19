@@ -44,3 +44,5 @@ debug
 # certificates
 out
 docker-compose.override.yml
+
+sensebox-mailer

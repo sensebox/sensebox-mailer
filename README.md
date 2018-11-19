@@ -1,6 +1,6 @@
 # sensebox-mailer
 
-This project is the mailer used by the [openSenseMap-API](https://github.com/sensebox/openSenseMap-API) and other services in the openSenseMap stack. It it written in Golang and thus can be compiled into a single binary.
+This project is the mailer used by the [openSenseMap-API](https://github.com/sensebox/openSenseMap-API) and other services in the openSenseMap stack. It is written in Golang and thus can be compiled into a single binary.
 
 ## Development
 
@@ -16,7 +16,7 @@ This project is the mailer used by the [openSenseMap-API](https://github.com/sen
 
 1. Create new html files in `templates`. Ideally named `yourNewTemplate_en.html` or `yourNewTemplate_de.html`. Please always create both files for german (`_de.html`) and english (`_en.html`).
 1. Edit `templates/templates.json` and add your template to the array.
-1. Run `statik -src=templates`
+1. Run `statik -src=templates -f`
 1. Compile the project `go build -o sensebox-mailer cmd/sensebox-mailer/*.go`
 
 ### Running
@@ -27,29 +27,22 @@ A good mailserver for development and testing is [mailhog](https://github.com/ma
 
     docker run -d --name mailhog -p "1025:1025" -p "8025:8025" mailhog/mailhog
 
-A good starting point for a bash script for development usage could look like this:
+A good starting point for a bash script for development is `mailhog.sh`.
 
-```bash
-#!/bin/bash
+Running this script:
 
-set -e
+- starts `mailhog` docker container
+- runs statik and compiles all templates
+- compiles the sensebox-mailer go binary
+- exports all necessary env variables
+- runs the sensebox-mailer go binary
 
-statik -src=templates
-go build -o sensebox-mailer cmd/sensebox-mailer/*.go
+Before running this script its important to run [`genCerts.sh`](#1-generate-server-and-client-certificates).
 
-export SENSEBOX_MAILER_SERVER_CERT=$(cat out/mailer_server.crt)
-export SENSEBOX_MAILER_SERVER_KEY=$(cat out/mailer_server.key)
-export SENSEBOX_MAILER_CA_CERT=$(cat out/openSenseMapCA.crt)
-export SENSEBOX_MAILER_SMTP_SERVER=localhost
-export SENSEBOX_MAILER_SMTP_PORT=1025
-export SENSEBOX_MAILER_SMTP_USER=mailhog
-export SENSEBOX_MAILER_SMTP_PASSWORD=mailhog
-export SENSEBOX_MAILER_FROM_DOMAIN=mailertest.sensebox
-export SENSEBOX_MAILER_FROM_NAME_PREFIX=mailer
-# export SENSEBOX_MAILER_HONEYBADGER_APIKEY=aaaaaaaa
+You run `node index.js` to test your templates. Visit `localhost:8025` and check the **Inbox** for new mails.
 
-./sensebox-mailer
-```
+Change the value of `template` inside `index.js` to test different `templates`.
+
 
 ## HTTP interface
 

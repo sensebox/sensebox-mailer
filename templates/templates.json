@@ -25,6 +25,18 @@
 	},
 	{
 		"language": "en",
+		"template": "newBoxHackAir",
+		"fromName": "openSenseMap",
+		"subject": "Your device on openSenseMap"
+	},
+	{
+		"language": "de",
+		"template": "newBoxHackAir",
+		"fromName": "openSenseMap",
+		"subject": "Dein neues Gerät auf der openSenseMap"
+	},
+	{
+		"language": "en",
 		"template": "newUser",
 		"fromName": "openSenseMap",
 		"subject": "Your openSenseMap registration"
