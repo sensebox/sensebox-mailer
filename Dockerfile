@@ -1,4 +1,4 @@
-FROM golang:1.15 as builder
+FROM golang:1.15-alpine as builder
 
 ENV IMPORTPATH=github.com/sensebox/sensebox-mailer
 
@@ -15,7 +15,9 @@ RUN export branch=$(git rev-parse --abbrev-ref HEAD) && \
   export hash=$(TZ=UTC git log --date=local --pretty=format:"%h" -n 1) && \
   CGO_ENABLED=0 go install -a -tags netgo -ldflags "-extldflags -static -X main.branch=$branch -X main.ts=$ts -X main.hash=$hash" ${IMPORTPATH}/cmd/sensebox-mailer
 
-FROM scratch
+FROM alpine:3.12
+
+RUN apk add --no-cache git
 
 COPY --from=builder /etc/ssl/certs/ /etc/ssl/certs
 
