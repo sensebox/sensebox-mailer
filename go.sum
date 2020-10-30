@@ -1,0 +1,14 @@
+github.com/honeybadger-io/honeybadger-go v0.1.0 h1:KpGQung2ThidzxokaZsj3ySi5V+/sNaD9Ga8kfp+Z4U=
+github.com/honeybadger-io/honeybadger-go v0.1.0/go.mod h1:QBg96N5tQeLsbJzkgqkoIazFoND4NJmTCByL+73Ve10=
+github.com/lovego/email v0.0.0-20171113032818-f4db5d7e012a h1:LKdF5HKoeHpkpbbaRqSDTYr4g7/8Dlox43eXrM+ukSM=
+github.com/lovego/email v0.0.0-20171113032818-f4db5d7e012a/go.mod h1:q2TS9lGI+TrKIQBaPwC6skyk9WhYBb9RrNXNib+T9L4=
+github.com/pborman/uuid v0.0.0-20170612153648-e790cca94e6c h1:MUyE44mTvnI5A0xrxIxaMqoWFzPfQvtE2IWUollMDMs=
+github.com/pborman/uuid v0.0.0-20170612153648-e790cca94e6c/go.mod h1:VyrYX9gd7irzKovcSS6BIIEwPRkP2Wm2m9ufcdFSJ34=
+github.com/rakyll/statik v0.1.1 h1:fCLHsIMajHqD5RKigbFXpvX3dN7c80Pm12+NCrI3kvg=
+github.com/rakyll/statik v0.1.1/go.mod h1:OEi9wJV/fMUAGx1eNjq75DKDsJVuEv1U0oYdX6GX8Zs=
+github.com/sensebox/sensebox-mailer v0.0.1 h1:r5d2Tv/JfFAYNNaJjcM+tLWdnTP/mLg0Js7/CMNyNGA=
+github.com/sensebox/sensebox-mailer v0.0.1/go.mod h1:w8IIdjUdYzEKi0ngQzg0ArjufGJ0fDG4Q0yDZddge+E=
+github.com/shirou/gopsutil v2.17.10+incompatible h1:kxelzrE1tvEmUMqHp2uP7LFmkDoViSwFEK2ebrO/SS0=
+github.com/shirou/gopsutil v2.17.10+incompatible/go.mod h1:5b4v6he4MtMOwMlS0TUMTu2PcXUg8+E1lC7eC3UO/RA=
+golang.org/x/sys v0.0.0-20171121202757-82aafbf43bf8 h1:SdO6BXbhDSVErwri+Mz+xveYAAop+4tKtCQmxmsHuOY=
+golang.org/x/sys v0.0.0-20171121202757-82aafbf43bf8/go.mod h1:STP8DvDyc/dI5b8T5hshtkjS+E42TnysNCUPdjciGhY=
