@@ -33,7 +33,7 @@ func fetchLatestTemplatesFromGithub() {
 	ticker := time.NewTicker(60000 * time.Millisecond)
 
 	for range ticker.C {
-		cmd := exec.Command("git", "pull")
+		cmd := exec.Command("git", "pull", "origin", "main")
 		cmd.Dir = "./sensebox-mailer-templates"
 		cmd.Stdout = os.Stdout
 		cmd.Stderr = os.Stderr
