@@ -1,4 +1,4 @@
-FROM golang:1.10 as builder
+FROM golang:1.15 as builder
 
 ENV IMPORTPATH=github.com/sensebox/sensebox-mailer
 
