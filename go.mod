@@ -1,6 +1,6 @@
 module github.com/sensebox/sensebox-mailer
 
-go 1.14
+go 1.15
 
 require (
 	github.com/honeybadger-io/honeybadger-go v0.1.0
