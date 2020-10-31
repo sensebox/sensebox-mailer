@@ -21,7 +21,7 @@ jobs:
     # reasonable versions installed ok for our use case
     - run: |
         GO111MODULE=on go get github.com/mailhog/MailHog@v1.0.1
-        GO111MODULE=on go get github.com/square/certstrap@v7cda9d4
+        GO111MODULE=on go get github.com/square/certstrap@7cda9d4
         mv $GOPATH/bin/MailHog /usr/bin/mailhog
         mv $GOPATH/bin/certstrap /usr/bin/certstrap
 
