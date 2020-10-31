@@ -20,6 +20,7 @@ jobs:
     # no need to setup go or docker, ubuntu-20.04 has
     # reasonable versions installed ok for our use case
     - run: |
+        set -e
         export GOPATH=${HOME}/go
 
         GO111MODULE=on go get github.com/mailhog/MailHog@v1.0.1
@@ -31,9 +32,7 @@ jobs:
 
         ./genCerts.sh
 
-        ls
-
-        ls out
+        MailHog &
 
         export SENSEBOX_MAILER_SERVER_CERT=$(cat out/mailer_server.crt)
         export SENSEBOX_MAILER_SERVER_KEY=$(cat out/mailer_server.key)
@@ -45,7 +44,8 @@ jobs:
         export SENSEBOX_MAILER_FROM_DOMAIN=sensebox.de
         export SENSEBOX_MAILER_FROM_NAME_PREFIX=senseBox
 
-        docker run --rm -it \
+        docker run \
+          --name=mailer \
           --network=host \
           -e SENSEBOX_MAILER_SERVER_CERT \
           -e SENSEBOX_MAILER_SERVER_KEY \
