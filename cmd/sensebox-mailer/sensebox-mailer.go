@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"os"
+	"os/exec"
 	"strconv"
 	"time"
 
@@ -28,6 +29,21 @@ func logStartup() {
 	fmt.Printf("sensebox-mailer startup. Version: %s %s %s\n", branch, timestamp, hash)
 }
 
+func fetchLatestTemplatesFromGithub() {
+	ticker := time.NewTicker(60000 * time.Millisecond)
+
+	for range ticker.C {
+		cmd := exec.Command("git", "pull", "origin", "main")
+		cmd.Dir = "./sensebox-mailer-templates"
+		cmd.Stdout = os.Stdout
+		cmd.Stderr = os.Stderr
+		err := cmd.Run()
+		if err != nil {
+			fmt.Println("Error pulling git repository")
+		}
+	}
+}
+
 func main() {
 	defer honeybadger.Monitor()
 
@@ -50,6 +66,23 @@ func main() {
 		SMTPPassword: smtpPassword,
 		FromDomain:   fromDomain,
 	}
+
+	// Check if templates folder exists
+	if _, err := os.Stat("./sensebox-mailer-templates"); os.IsNotExist(err) {
+		fmt.Println("Templates do not exists; Go and clone repository")
+		cmd := exec.Command("git", "clone", "git@github.com:sensebox/sensebox-mailer-templates.git")
+		err := cmd.Run()
+		if err != nil {
+			fmt.Println("Git clone failed :(")
+		} else {
+			fmt.Println("Successfully cloned templates")
+		}
+	} else {
+		fmt.Println("Templates exists; go and start pulling updates")
+	}
+
+	// Start routine to fetch latest templates
+	go fetchLatestTemplatesFromGithub()
 
 	err := mailer.Start()
 	if err != nil {
