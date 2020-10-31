@@ -11,27 +11,43 @@ on:
     - development
 
 jobs:
-  build-mailer:
-    name: build sensebox-mailer
+  test-mailer:
+    name: Test sensebox-mailer
     runs-on: ubuntu-20.04
     steps:
     - uses: actions/checkout@v2
 
-    - uses: actions/setup-go@v2
-      with:
-        go-version: '^1.15.3' # The Go version to download (if necessary) and use.
-
+    # no need to setup go or docker, ubuntu-20.04 has
+    # reasonable versions installed ok for our use case
     - run: |
+        GO111MODULE=on go get github.com/mailhog/MailHog@v1.0.1
+        GO111MODULE=on go get github.com/square/certstrap@v7cda9d4
+        mv $GOPATH/bin/MailHog /usr/bin/mailhog
+        mv $GOPATH/bin/certstrap /usr/bin/certstrap
+
         docker build -t ci-mailer .
 
+        ./genCerts.sh
 
-  build-mailhog:
-    name: build mailhog
-    runs-on: ubuntu-20.04
-    steps:
-    - uses: actions/setup-go@v2
-      with:
-        go-version: '^1.15.3' # The Go version to download (if necessary) and use.
+        export SENSEBOX_MAILER_SERVER_CERT=$(cat out/mailer_server.crt)
+        export SENSEBOX_MAILER_SERVER_KEY=$(cat out/mailer_server.key)
+        export SENSEBOX_MAILER_CA_CERT=$(cat out/openSenseMapCA.crt)
+        export SENSEBOX_MAILER_SMTP_SERVER=localhost
+        export SENSEBOX_MAILER_SMTP_PORT=1025
+        export SENSEBOX_MAILER_SMTP_USER=smtpuser
+        export SENSEBOX_MAILER_SMTP_PASSWORD=smtppassword
+        export SENSEBOX_MAILER_FROM_DOMAIN=sensebox.de
+        export SENSEBOX_MAILER_FROM_NAME_PREFIX=senseBox
 
-    - run: |
-        go get github.com/mailhog/MailHog@v1.0.1
+        docker run --rm -it \
+          --network=host \
+          -e SENSEBOX_MAILER_SERVER_CERT \
+          -e SENSEBOX_MAILER_SERVER_KEY \
+          -e SENSEBOX_MAILER_CA_CERT \
+          -e SENSEBOX_MAILER_SMTP_SERVER \
+          -e SENSEBOX_MAILER_SMTP_PORT \
+          -e SENSEBOX_MAILER_SMTP_USER \
+          -e SENSEBOX_MAILER_SMTP_PASSWORD \
+          -e SENSEBOX_MAILER_FROM_DOMAIN \
+          -e SENSEBOX_MAILER_FROM_NAME_PREFIX \
+          ci-mailer
