@@ -22,8 +22,8 @@ jobs:
     - run: |
         GO111MODULE=on go get github.com/mailhog/MailHog@v1.0.1
         GO111MODULE=on go get github.com/square/certstrap@7cda9d4
-        mv $GOPATH/bin/MailHog /usr/bin/mailhog
-        mv $GOPATH/bin/certstrap /usr/bin/certstrap
+        mv /go/bin/MailHog /usr/bin/mailhog
+        mv /go/bin/certstrap /usr/bin/certstrap
 
         docker build -t ci-mailer .
 
