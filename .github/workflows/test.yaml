@@ -20,15 +20,12 @@ jobs:
     # no need to setup go or docker, ubuntu-20.04 has
     # reasonable versions installed ok for our use case
     - run: |
-        env
-
         export GOPATH=${HOME}/go
 
         GO111MODULE=on go get github.com/mailhog/MailHog@v1.0.1
         GO111MODULE=on go get github.com/square/certstrap@7cda9d4
 
-        mv ${GOPATH}/bin/MailHog /usr/bin/mailhog
-        mv ${GOPATH}/bin/certstrap /usr/bin/certstrap
+        export PATH=${PATH}:${GOPATH}/bin
 
         docker build -t ci-mailer .
 
