@@ -46,3 +46,6 @@ out
 docker-compose.override.yml
 
 sensebox-mailer
+
+# Mailer templates
+sensebox-mailer-templates
