@@ -12,7 +12,7 @@ $GOBIN/statik -src=templates -f
 go build -o sensebox-mailer -ldflags "-X main.branch=$branch -X main.ts=$ts -X main.hash=$hash" cmd/sensebox-mailer/*.go
 
 export SENSEBOX_MAILER_SERVER_CERT=$(cat out/mailer_server.crt)
-export SENSEBOX_MAILER_SERVER_KEY=$(cat out/mailer_server.key)
+export SENSEBOX_MAILER_SERVER_KEY=$(cat out/openSenseMapCA.key)
 export SENSEBOX_MAILER_CA_CERT=$(cat out/openSenseMapCA.crt)
 export SENSEBOX_MAILER_SMTP_SERVER=localhost
 export SENSEBOX_MAILER_SMTP_PORT=1025

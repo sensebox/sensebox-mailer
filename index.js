@@ -6,10 +6,10 @@ var options = {
   port: 3924,
   path: "/",
   method: "POST",
-  key: fs.readFileSync("./out/mailer_client.key"),
+  key: fs.readFileSync("./out/openSenseMapCA.key"),
   cert: fs.readFileSync("./out/mailer_client.crt"),
   ca: fs.readFileSync("./out/openSenseMapCA.crt"),
-  ecdhCurve: "auto"
+  ecdhCurve: "auto",
 };
 
 var req = https.request(options, function(res) {
