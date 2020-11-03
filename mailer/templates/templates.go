@@ -12,7 +12,7 @@ import (
 )
 
 const (
-	templatesRepositoryGitURL = ""
+	templatesRepositoryGitURL = "https://github.com/sensebox/sensebox-mailer-templates.git"
 	templatesRepositoryBranch = "add-markdown"
 	templatesRepositoryFsPath = "./mailer-templates"
 )
@@ -25,8 +25,8 @@ func FetchLatestTemplatesFromGithub() {
 	for range ticker.C {
 		cmd := exec.Command("git", "pull", "origin", templatesRepositoryBranch)
 		cmd.Dir = templatesRepositoryFsPath
-		cmd.Stdout = os.Stdout
 		cmd.Stderr = os.Stderr
+		fmt.Printf("Executing %v", cmd.Args)
 		err := cmd.Run()
 		if err != nil {
 			fmt.Printf("Error pulling git repository %v", err)
@@ -43,10 +43,9 @@ func CloneTemplatesFromGitHub() error {
 	if _, err := os.Stat(templatesRepositoryFsPath); os.IsNotExist(err) {
 		fmt.Println("Templates do not exists; Go and clone repository")
 		cmd := exec.Command("git", "clone", "-b", templatesRepositoryBranch, templatesRepositoryGitURL, templatesRepositoryFsPath)
-		err := cmd.Run()
-		if err != nil {
-			return err
-		}
+		cmd.Stderr = os.Stderr
+		fmt.Printf("Executing %v", cmd.Args)
+		return cmd.Run()
 	}
 	return slurpTemplates()
 }
