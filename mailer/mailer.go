@@ -165,12 +165,10 @@ func (mr *MailRequest) UnmarshalJSON(jsonBytes []byte) error {
 	if err := json.Unmarshal(*request["payload"], &payload); err != nil {
 		return err
 	}
-	var buffer bytes.Buffer
-	err = templ.Execute(&buffer, payload)
+	templateBytes, err := templ.ConvertAndExecute(payload)
 	if err != nil {
 		return err
 	}
-	templateBytes := buffer.Bytes()
 
 	// recipient
 	var recipient MailRequestEmailAddress

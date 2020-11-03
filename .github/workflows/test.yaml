@@ -33,6 +33,7 @@ jobs:
         ./genCerts.sh
 
         MailHog &
+        MAILHOG_PID=$!
 
         export SENSEBOX_MAILER_SERVER_CERT=$(cat out/mailer_server.crt)
         export SENSEBOX_MAILER_SERVER_KEY=$(cat out/mailer_server.key)
@@ -45,6 +46,7 @@ jobs:
         export SENSEBOX_MAILER_FROM_NAME_PREFIX=senseBox
 
         docker run \
+          --detach \
           --name=mailer \
           --network=host \
           -e SENSEBOX_MAILER_SERVER_CERT \
@@ -57,3 +59,13 @@ jobs:
           -e SENSEBOX_MAILER_FROM_DOMAIN \
           -e SENSEBOX_MAILER_FROM_NAME_PREFIX \
           ci-mailer
+
+        echo "Sleeping 70 seconds to test git pull"
+
+        sleep 70
+
+        node index.js
+
+        docker stop mailer
+        docker rm mailer
+        kill $MAILHOG_PID
