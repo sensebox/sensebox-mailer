@@ -1,124 +1,99 @@
 package templates
 
 import (
-	"bytes"
-	"encoding/json"
 	"fmt"
-	"html/template"
-	"io/ioutil"
-	"net/http"
+	"os"
+	"os/exec"
+	"path/filepath"
 	"strings"
+	"time"
 
-	"github.com/rakyll/statik/fs"
-	_ "github.com/sensebox/sensebox-mailer/statik"
+	markdowntemplates "github.com/sensebox/sensebox-mailer-templates"
 )
 
-var statikFS http.FileSystem
-var theTemplates []LocalizedTemplate
+const (
+	templatesRepositoryGitURL = ""
+	templatesRepositoryBranch = "add-markdown"
+	templatesRepositoryFsPath = "./mailer-templates"
+)
 
-type LocalizedTemplate struct {
-	Language     string `json:"language"`
-	TemplateName string `json:"template"`
-	FromName     string `json:"fromName"`
-	Subject      string `json:"subject"`
-	Template     *template.Template
+var theTemplates []markdowntemplates.Template
+
+func FetchLatestTemplatesFromGithub() {
+	ticker := time.NewTicker(60000 * time.Millisecond)
+
+	for range ticker.C {
+		cmd := exec.Command("git", "pull", "origin", templatesRepositoryBranch)
+		cmd.Dir = templatesRepositoryFsPath
+		cmd.Stdout = os.Stdout
+		cmd.Stderr = os.Stderr
+		err := cmd.Run()
+		if err != nil {
+			fmt.Printf("Error pulling git repository %v", err)
+		}
+		err = slurpTemplates()
+		if err != nil {
+			fmt.Printf("Error reading templates %v", err)
+		}
+	}
 }
 
-func (td *LocalizedTemplate) UnmarshalJSON(jsonBytes []byte) error {
-	var t map[string]string
-
-	if err := json.Unmarshal(jsonBytes, &t); err != nil {
-		return err
+func CloneTemplatesFromGitHub() error {
+	// Check if templates folder exists
+	if _, err := os.Stat(templatesRepositoryFsPath); os.IsNotExist(err) {
+		fmt.Println("Templates do not exists; Go and clone repository")
+		cmd := exec.Command("git", "clone", "-b", templatesRepositoryBranch, templatesRepositoryGitURL, templatesRepositoryFsPath)
+		err := cmd.Run()
+		if err != nil {
+			return err
+		}
 	}
-	if err := initStatikFS(); err != nil {
-		return err
-	}
-
-	f, err := statikFS.Open(fmt.Sprintf("/%s_%s.html", t["template"], t["language"]))
-	if err != nil {
-		return err
-	}
-	templateBytes, err := ioutil.ReadAll(f)
-	if err != nil {
-		return err
-	}
-
-	template, err := template.New(t["template"]).Parse(string(templateBytes))
-	if err != nil {
-		return err
-	}
-	template.Option("missingkey=error")
-
-	*td = LocalizedTemplate{
-		t["language"],
-		t["template"],
-		t["fromName"],
-		t["subject"],
-		template,
-	}
-
-	return nil
+	return slurpTemplates()
 }
 
-func initStatikFS() error {
-	sFS, err := fs.New()
-	if err != nil {
-		return err
-	}
-	statikFS = sFS
-	return nil
-}
+func slurpTemplates() error {
 
-// FromJSON initializes the templates from the templates/templates.json file
-func FromJSON() (int, error) {
-	if err := initStatikFS(); err != nil {
-		return 0, err
-	}
+	templates := []markdowntemplates.Template{}
 
-	f, err := statikFS.Open("/templates.json")
-	if err != nil {
-		return 0, err
-	}
-	jsonBytes, err := ioutil.ReadAll(f)
+	return filepath.Walk(templatesRepositoryFsPath+"/templates", func(path string, info os.FileInfo, e error) error {
+		if e != nil {
+			return e
+		}
 
-	if err != nil {
-		return 0, err
-	}
-	f.Close()
+		// check if it is a regular file (not dir)
+		if info.Mode().IsRegular() && strings.HasSuffix(path, ".md") {
+			file, err := os.Open(path)
+			if err != nil {
+				return err
+			}
 
-	err = json.Unmarshal(jsonBytes, &theTemplates)
-	if err != nil {
-		return 0, err
-	}
+			tpls, err := markdowntemplates.Slurp(file)
+			if err != nil {
+				return err
+			}
+			templates = append(templates, tpls...)
 
-	return len(theTemplates), nil
+		}
+
+		return nil
+	})
 }
 
 // GetTemplate returns the template matching the templateName and the language
-func GetTemplate(templateName, language string) (LocalizedTemplate, error) {
+func GetTemplate(templateName, language string) (markdowntemplates.Template, error) {
 	if theTemplates == nil {
-		_, err := FromJSON()
+		err := slurpTemplates()
 		if err != nil {
-			return LocalizedTemplate{}, err
+			return markdowntemplates.Template{}, err
 		}
 	}
 
 	// check for direct or prefix (de_DE -> de) match
 	for _, template := range theTemplates {
-		if template.TemplateName == templateName && (template.Language == language || strings.HasPrefix(language, template.Language) == true) {
+		if template.Name == templateName && (template.Language == language || strings.HasPrefix(language, template.Language) == true) {
 			return template, nil
 		}
 	}
 
-	return LocalizedTemplate{}, fmt.Errorf("Template not available (template: '%s', language: '%s')", templateName, language)
-}
-
-// Execute executes the Template, filling it with the values from the payload
-func (td LocalizedTemplate) Execute(payload interface{}) ([]byte, error) {
-	var buffer bytes.Buffer
-	err := td.Template.Execute(&buffer, payload)
-	if err != nil {
-		return []byte{}, err
-	}
-	return buffer.Bytes(), nil
+	return markdowntemplates.Template{}, fmt.Errorf("Template not available (template: '%s', language: '%s')", templateName, language)
 }

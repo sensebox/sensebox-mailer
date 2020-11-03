@@ -6,10 +6,6 @@ WORKDIR /go/src/${IMPORTPATH}
 
 COPY . ./
 
-# Compile static assets
-RUN go get github.com/rakyll/statik && \
-  statik -src=/go/src/${IMPORTPATH}/templates
-
 RUN export branch=$(git rev-parse --abbrev-ref HEAD) && \
   export ts=$(TZ=UTC git log --date=local --pretty=format:"%ct" -n 1) && \
   export hash=$(TZ=UTC git log --date=local --pretty=format:"%h" -n 1) && \
@@ -17,9 +13,7 @@ RUN export branch=$(git rev-parse --abbrev-ref HEAD) && \
 
 FROM alpine:3.12
 
-RUN apk add --no-cache git
-
-COPY --from=builder /etc/ssl/certs/ /etc/ssl/certs
+RUN apk add --no-cache git ca-certificate
 
 COPY --from=builder /go/bin/sensebox-mailer /sensebox-mailer
 
