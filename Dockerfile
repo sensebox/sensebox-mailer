@@ -14,7 +14,7 @@ RUN apk --no-cache add git && \
 
 FROM alpine:3.12
 
-RUN apk add --no-cache git ca-certificate
+RUN apk add --no-cache git ca-certificates
 
 COPY --from=builder /go/bin/sensebox-mailer /sensebox-mailer
 
