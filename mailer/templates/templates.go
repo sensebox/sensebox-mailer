@@ -54,7 +54,7 @@ func slurpTemplates() error {
 
 	templates := []markdowntemplates.Template{}
 
-	return filepath.Walk(templatesRepositoryFsPath+"/templates", func(path string, info os.FileInfo, e error) error {
+	err := filepath.Walk(templatesRepositoryFsPath+"/templates", func(path string, info os.FileInfo, e error) error {
 		if e != nil {
 			return e
 		}
@@ -76,6 +76,14 @@ func slurpTemplates() error {
 
 		return nil
 	})
+
+	if err != nil {
+		return err
+	}
+
+	theTemplates = templates
+
+	return nil
 }
 
 // GetTemplate returns the template matching the templateName and the language
