@@ -88,6 +88,8 @@ func (mailer *MailerServer) startHTTPSServer() error {
 	tlsConfig.BuildNameToCertificate()
 	LogInfo("StartHTTPSServer", "built name to certificate")
 
+	http.Handle("/", mailRequestHandler(mailer.requestHandler))
+
 	httpServer := &http.Server{
 		Addr:      "0.0.0.0:3924",
 		TLSConfig: tlsConfig,
