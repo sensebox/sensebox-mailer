@@ -6,7 +6,6 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/honeybadger-io/honeybadger-go"
 	"github.com/sensebox/sensebox-mailer/mailer"
 	"github.com/sensebox/sensebox-mailer/mailer/templates"
 	// should be "github.com/jordan-wright/email"
@@ -30,10 +29,8 @@ func logStartup() {
 }
 
 func main() {
-	defer honeybadger.Monitor()
-
 	logStartup()
-	caCert, serverCert, serverKey, smtpServer, smtpUser, smtpPassword, fromDomain, smtpPort, errors := initConfigFromEnv()
+	caCert, serverCert, serverKey, smtpServer, smtpUser, smtpPassword, fromDomain, smtpPort, repository, branch, fsPath, fetchInterval, errors := initConfigFromEnv()
 	if len(errors) != 0 {
 		for _, err := range errors {
 			fmt.Println(err.Error())
@@ -52,14 +49,11 @@ func main() {
 		FromDomain:   fromDomain,
 	}
 
-	err := templates.CloneTemplatesFromGitHub()
+	err := templates.NewTemplater(repository, branch, fsPath, fetchInterval)
 	if err != nil {
 		fmt.Println(err)
 		os.Exit(1)
 	}
-
-	// Start routine to fetch latest templates
-	go templates.FetchLatestTemplatesFromGithub()
 
 	err = mailer.Start()
 	if err != nil {

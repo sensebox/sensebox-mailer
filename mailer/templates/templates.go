@@ -11,46 +11,69 @@ import (
 	markdowntemplates "github.com/sensebox/sensebox-mailer-templates"
 )
 
-const (
-	templatesRepositoryGitURL = "https://github.com/sensebox/sensebox-mailer-templates.git"
-	templatesRepositoryBranch = "main"
-	templatesRepositoryFsPath = "./mailer-templates"
-)
+type Templater struct {
+	RepositoryGitURL string
+	RepositoryBranch string
+	RepositoryFsPath string
+	RepositoryPullInterval time.Duration
+	TheTemplates []markdowntemplates.Template
+}
 
-var theTemplates []markdowntemplates.Template
+var theTemplater *Templater
 
-func FetchLatestTemplatesFromGithub() {
-	ticker := time.NewTicker(60000 * time.Millisecond)
+func NewTemplater(RepositoryGitURL, RepositoryBranch, RepositoryFsPath string, RepositoryPullInterval time.Duration) error {
+
+	templater := Templater{
+		RepositoryGitURL: RepositoryGitURL,
+		RepositoryBranch: RepositoryBranch,
+		RepositoryFsPath: RepositoryFsPath,
+		RepositoryPullInterval: RepositoryPullInterval,
+	}
+
+	theTemplater = &templater
+
+	err := templater.CloneTemplatesFromGitHub()
+	if err != nil {
+		return err
+	}
+
+	// Start routine to fetch latest templates
+	go templater.FetchLatestTemplatesFromGithub()
+	return nil
+}
+
+func (templater *Templater) FetchLatestTemplatesFromGithub() {
+	ticker := time.NewTicker(templater.RepositoryPullInterval)
 
 	for range ticker.C {
-		cmd := exec.Command("git", "pull", "origin", templatesRepositoryBranch)
-		cmd.Dir = templatesRepositoryFsPath
+		cmd := exec.Command("git", "pull", "origin", templater.RepositoryBranch)
+		cmd.Dir = templater.RepositoryFsPath
 		cmd.Stderr = os.Stderr
 		fmt.Printf("Executing %v", cmd.Args)
 		err := cmd.Run()
 		if err != nil {
 			fmt.Printf("Error pulling git repository %v", err)
 		}
-		err = slurpTemplates()
+		err = templater.slurpTemplates(templater.RepositoryFsPath)
 		if err != nil {
 			fmt.Printf("Error reading templates %v", err)
 		}
 	}
 }
 
-func CloneTemplatesFromGitHub() error {
+func (templater *Templater) CloneTemplatesFromGitHub() error {
 	// Check if templates folder exists
-	if _, err := os.Stat(templatesRepositoryFsPath); os.IsNotExist(err) {
+	if _, err := os.Stat(templater.RepositoryFsPath); os.IsNotExist(err) {
 		fmt.Println("Templates do not exists; Go and clone repository")
-		cmd := exec.Command("git", "clone", "-b", templatesRepositoryBranch, templatesRepositoryGitURL, templatesRepositoryFsPath)
+		cmd := exec.Command("git", "clone", "-b", templater.RepositoryBranch, templater.RepositoryGitURL, templater.RepositoryFsPath)
 		cmd.Stderr = os.Stderr
 		fmt.Printf("Executing %v", cmd.Args)
 		return cmd.Run()
 	}
-	return slurpTemplates()
+	return templater.slurpTemplates(templater.RepositoryFsPath)
 }
 
-func slurpTemplates() error {
+func (templater *Templater) slurpTemplates(templatesRepositoryFsPath string) error {
 
 	templates := []markdowntemplates.Template{}
 
@@ -81,22 +104,22 @@ func slurpTemplates() error {
 		return err
 	}
 
-	theTemplates = templates
+	templater.TheTemplates = templates
 
 	return nil
 }
 
 // GetTemplate returns the template matching the templateName and the language
 func GetTemplate(templateName, language string) (markdowntemplates.Template, error) {
-	if theTemplates == nil {
-		err := slurpTemplates()
+	if theTemplater == nil {
+		err := fmt.Errorf("Templater is not available")
 		if err != nil {
 			return markdowntemplates.Template{}, err
 		}
 	}
 
 	// check for direct or prefix (de_DE -> de) match
-	for _, template := range theTemplates {
+	for _, template := range theTemplater.TheTemplates {
 		if template.Name == templateName && (template.Language == language || strings.HasPrefix(language, template.Language) == true) {
 			return template, nil
 		}

@@ -4,21 +4,13 @@ import (
 	"fmt"
 	"os"
 	"strconv"
-
-	"github.com/honeybadger-io/honeybadger-go"
+	"time"
 )
 
 const envPrefix = "SENSEBOX_MAILER_"
 
-func initConfigFromEnv() (caCert, serverCert, serverKey []byte, smtpServer, smtpUser, smtpPassword, fromDomain string, smtpPort int, errors []error) {
+func initConfigFromEnv() (caCert, serverCert, serverKey []byte, smtpServer, smtpUser, smtpPassword, fromDomain string, smtpPort int, repository string, branch string, fsPath string, fetchInterval time.Duration, errors []error) {
 	errors = make([]error, 0)
-
-	// try to configure honeybadger integration..
-	honeybadgerAPIKey, _ := getStringFromEnv("HONEYBADGER_APIKEY")
-	if honeybadgerAPIKey != "" {
-		honeybadger.Configure(honeybadger.Configuration{APIKey: honeybadgerAPIKey})
-		fmt.Println("startup, enabled honeybadger integration")
-	}
 
 	caCert, caCertBytesErr := getBytesFromEnv("CA_CERT")
 	if caCertBytesErr != nil {
@@ -60,6 +52,30 @@ func initConfigFromEnv() (caCert, serverCert, serverKey []byte, smtpServer, smtp
 		errors = append(errors, fromDomainErr)
 	}
 
+	repository, repositoryErr := getStringFromEnvWithDefault("TEMPLATES_REPOSITORY","https://github.com/sensebox/sensebox-mailer-templates.git")
+	if repositoryErr != nil {
+		errors = append(errors, repositoryErr)
+	}
+
+	branch, branchErr := getStringFromEnvWithDefault("TEMPLATES_BRANCH","main")
+	if branchErr != nil {
+		errors = append(errors, branchErr)
+	}
+
+	fsPath, fsPathErr := getStringFromEnvWithDefault("TEMPLATES_FS_PATH","./mailer-templates")
+	if fsPathErr != nil {
+		errors = append(errors, fsPathErr)
+	}
+
+	fetchIntervalStr, fetchIntervalStrErr := getStringFromEnvWithDefault("TEMPLATES_FETCH_INTERVAL", "5m")
+	if fetchIntervalStrErr != nil {
+		errors = append(errors, fetchIntervalStrErr)
+	}
+	fetchInterval, fetchIntervalErr := time.ParseDuration(fetchIntervalStr)
+	if fetchIntervalErr != nil {
+		errors = append(errors, fetchIntervalErr)
+	}
+
 	if len(errors) != 0 {
 		return
 	}
@@ -70,6 +86,14 @@ func getStringFromEnv(key string) (string, error) {
 	str := os.Getenv(envPrefix + key)
 	if len(str) == 0 {
 		return "", fmt.Errorf("Please add %s%s to your environment", envPrefix, key)
+	}
+	return str, nil
+}
+
+func getStringFromEnvWithDefault(key string, defaultValue string) (string, error) {
+	str := os.Getenv(envPrefix + key)
+	if len(str) == 0 {
+		return defaultValue, nil
 	}
 	return str, nil
 }
