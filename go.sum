@@ -8,8 +8,8 @@ github.com/pborman/uuid v0.0.0-20170612153648-e790cca94e6c h1:MUyE44mTvnI5A0xrxI
 github.com/pborman/uuid v0.0.0-20170612153648-e790cca94e6c/go.mod h1:VyrYX9gd7irzKovcSS6BIIEwPRkP2Wm2m9ufcdFSJ34=
 github.com/pmezard/go-difflib v1.0.0 h1:4DBwDE0NGyQoBHbLQYPwSUPoCMWR5BEzIk/f1lZbAQM=
 github.com/pmezard/go-difflib v1.0.0/go.mod h1:iKH77koFhYxTK1pcRnkKkqfTogsbg7gZNVY4sRDYZ/4=
-github.com/sensebox/sensebox-mailer-templates v0.0.0-20201103113107-86798bfd9e61 h1:l6OA6N/x2dEMsQpWEDGesGsvmW/mInsQAOi0Y3gWkfY=
-github.com/sensebox/sensebox-mailer-templates v0.0.0-20201103113107-86798bfd9e61/go.mod h1:hGHGmmf7jU7Usjz2g9PcGjUp62UQ5a7remZJRjlFyOs=
+github.com/sensebox/sensebox-mailer-templates v0.0.0-20210117123008-cba07d01969c h1:2KaH3huC6h6xRdc+tAO3YeQYL7ojZxH+8nTdKA6A0vo=
+github.com/sensebox/sensebox-mailer-templates v0.0.0-20210117123008-cba07d01969c/go.mod h1:hGHGmmf7jU7Usjz2g9PcGjUp62UQ5a7remZJRjlFyOs=
 github.com/shirou/gopsutil v2.17.10+incompatible h1:kxelzrE1tvEmUMqHp2uP7LFmkDoViSwFEK2ebrO/SS0=
 github.com/shirou/gopsutil v2.17.10+incompatible/go.mod h1:5b4v6he4MtMOwMlS0TUMTu2PcXUg8+E1lC7eC3UO/RA=
 github.com/stretchr/objx v0.1.0 h1:4G4v2dO3VZwixGIRoQ5Lfboy6nUhCyYzaqnIAPPhYs4=
