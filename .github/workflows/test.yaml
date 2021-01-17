@@ -9,6 +9,7 @@ on:
     branches:
     - master
     - development
+    - ci-stuff
 
 jobs:
   test-mailer:
@@ -64,7 +65,7 @@ jobs:
 
         sleep 70
 
-        node index.js
+        node test/
 
         docker stop mailer
         docker rm mailer

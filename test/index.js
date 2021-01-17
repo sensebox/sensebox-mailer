@@ -1,11 +1,10 @@
-var fs = require("fs");
-var https = require("https");
-var http = require("http");
+import { request as _request } from "http";
+import { sendMail } from "./utils.js";
 
 function checkMailhog () {
   console.log("")
   setTimeout(function () {
-    var apiReq = http.request({
+    var apiReq = _request({
       hostname: "localhost",
       port: 8025,
       path: "/api/v2/messages",
@@ -34,27 +33,6 @@ function checkMailhog () {
   }, 5000);
 }
 
-function sendMail () {
-  var options = {
-    hostname: "localhost",
-    port: 3924,
-    path: "/",
-    method: "POST",
-    key: fs.readFileSync("./out/mailer_client.key"),
-    cert: fs.readFileSync("./out/mailer_client.crt"),
-    ca: fs.readFileSync("./out/openSenseMapCA.crt"),
-    ecdhCurve: "auto"
-  };
-
-  var req = https.request(options, function(res) {
-    res.on("data", function(data) {
-      process.stdout.write(data);
-    });
-    res.on("end", function () {
-      checkMailhog();
-    })
-  });
-
   var payload = [
     {
       template: "newBoxHackAir",
@@ -79,13 +57,4 @@ function sendMail () {
     }
   ];
 
-  req.write(JSON.stringify(payload));
-
-  req.end();
-
-  req.on("error", function(e) {
-    console.error(e);
-  });
-}
-
-sendMail();
+sendMail({ payload, callback: checkMailhog });
