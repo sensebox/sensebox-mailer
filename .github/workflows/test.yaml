@@ -45,7 +45,7 @@ jobs:
         export SENSEBOX_MAILER_SMTP_PASSWORD=smtppassword
         export SENSEBOX_MAILER_FROM_DOMAIN=sensebox.de
         export SENSEBOX_MAILER_FROM_NAME_PREFIX=senseBox
-        export TEMPLATES_FETCH_INTERVAL=5s
+        export SENSEBOX_MAILER_TEMPLATES_FETCH_INTERVAL=5s
 
         docker run \
           --detach \
@@ -60,7 +60,7 @@ jobs:
           -e SENSEBOX_MAILER_SMTP_PASSWORD \
           -e SENSEBOX_MAILER_FROM_DOMAIN \
           -e SENSEBOX_MAILER_FROM_NAME_PREFIX \
-          -e TEMPLATES_FETCH_INTERVAL \
+          -e SENSEBOX_MAILER_TEMPLATES_FETCH_INTERVAL \
           ci-mailer
 
         echo "Sleeping 15 seconds to test git pull"
