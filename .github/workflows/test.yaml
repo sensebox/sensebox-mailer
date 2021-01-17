@@ -18,6 +18,11 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
+    - uses: webiny/action-post-run@1.0.0
+      id: docker-logs
+      with:
+        command: docker logs mailer
+
     # no need to setup go or docker, ubuntu-20.04 has
     # reasonable versions installed ok for our use case
     - run: |
