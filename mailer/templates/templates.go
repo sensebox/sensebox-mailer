@@ -13,7 +13,7 @@ import (
 
 const (
 	templatesRepositoryGitURL = "https://github.com/sensebox/sensebox-mailer-templates.git"
-	templatesRepositoryBranch = "add-markdown"
+	templatesRepositoryBranch = "main"
 	templatesRepositoryFsPath = "./mailer-templates"
 )
 
