@@ -107,4 +107,3 @@ You should configure the following variables:
 | `SMTP_USER` | the smtp server user |  |
 | `SMTP_PASSWORD` | the smtp server password |  |
 | `FROM_DOMAIN` | the domain you are sending from |  |
-| `HONEYBADGER_APIKEY` | api key for honeybadger error reporting | y |

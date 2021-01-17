@@ -6,7 +6,6 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/honeybadger-io/honeybadger-go"
 	"github.com/sensebox/sensebox-mailer/mailer"
 	"github.com/sensebox/sensebox-mailer/mailer/templates"
 	// should be "github.com/jordan-wright/email"
@@ -30,8 +29,6 @@ func logStartup() {
 }
 
 func main() {
-	defer honeybadger.Monitor()
-
 	logStartup()
 	caCert, serverCert, serverKey, smtpServer, smtpUser, smtpPassword, fromDomain, smtpPort, errors := initConfigFromEnv()
 	if len(errors) != 0 {

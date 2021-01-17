@@ -4,21 +4,12 @@ import (
 	"fmt"
 	"os"
 	"strconv"
-
-	"github.com/honeybadger-io/honeybadger-go"
 )
 
 const envPrefix = "SENSEBOX_MAILER_"
 
 func initConfigFromEnv() (caCert, serverCert, serverKey []byte, smtpServer, smtpUser, smtpPassword, fromDomain string, smtpPort int, errors []error) {
 	errors = make([]error, 0)
-
-	// try to configure honeybadger integration..
-	honeybadgerAPIKey, _ := getStringFromEnv("HONEYBADGER_APIKEY")
-	if honeybadgerAPIKey != "" {
-		honeybadger.Configure(honeybadger.Configuration{APIKey: honeybadgerAPIKey})
-		fmt.Println("startup, enabled honeybadger integration")
-	}
 
 	caCert, caCertBytesErr := getBytesFromEnv("CA_CERT")
 	if caCertBytesErr != nil {
