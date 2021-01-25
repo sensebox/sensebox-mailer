@@ -97,7 +97,7 @@ You should configure the following variables:
 | `SMTP_USER` | the smtp server user |  |
 | `SMTP_PASSWORD` | the smtp server password |  |
 | `FROM_DOMAIN` | the domain you are sending from |  |
-| `TEMPLATES_REPOSITORY` | repository of the templates |  |
-| `TEMPLATES_BRANCH` | main branch of the repository which is pulled |  |
-| `TEMPLATES_FS_PATH` | path where to clone repository |  |
-| `TEMPLATES_FETCH_INTERVAL` | time interval how often to pull repository |  |
+| `TEMPLATES_REPOSITORY` | git url of the repository which contains the templates | y |
+| `TEMPLATES_BRANCH` | use this branch of the repository for templates | y |
+| `TEMPLATES_FS_PATH` | path where to clone repository | y |
+| `TEMPLATES_FETCH_INTERVAL` | time interval how often to pull repository. Specify in [go duration](https://golang.org/pkg/time/#ParseDuration) format.  | y |
