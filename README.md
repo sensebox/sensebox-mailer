@@ -97,7 +97,7 @@ You should configure the following variables:
 | `SMTP_USER` | the smtp server user |  |
 | `SMTP_PASSWORD` | the smtp server password |  |
 | `FROM_DOMAIN` | the domain you are sending from |  |
-| `TEMPLATES_REPOSITORY` | |  |
-| `TEMPLATES_BRANCH` | |  |
-| `TEMPLATES_FS_PATH` | |  |
-| `TEMPLATES_FETCH_INTERVAL` | |  |
+| `TEMPLATES_REPOSITORY` | repository of the templates |  |
+| `TEMPLATES_BRANCH` | main branch of the repository which is pulled |  |
+| `TEMPLATES_FS_PATH` | path where to clone repository |  |
+| `TEMPLATES_FETCH_INTERVAL` | time interval how often to pull repository |  |
