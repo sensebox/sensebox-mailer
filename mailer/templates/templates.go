@@ -67,7 +67,7 @@ func (templater *Templater) CloneTemplatesFromGitHub() error {
 		fmt.Println("Templates do not exists; Go and clone repository")
 		cmd := exec.Command("git", "clone", "-b", templater.RepositoryBranch, templater.RepositoryGitURL, templater.RepositoryFsPath)
 		cmd.Stderr = os.Stderr
-		fmt.Printf("Executing %v", cmd.Args)
+		fmt.Printf("Executing %v\n", cmd.Args)
 		return cmd.Run()
 	}
 	return templater.slurpTemplates(templater.RepositoryFsPath)
