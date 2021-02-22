@@ -104,6 +104,10 @@ func (templater *Templater) slurpTemplates(templatesRepositoryFsPath string) err
 		return err
 	}
 
+	if len(templates) == 0 {
+		return fmt.Errorf("No templates imported from template repository")
+	}
+
 	templater.TheTemplates = templates
 
 	return nil
