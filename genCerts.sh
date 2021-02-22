@@ -10,8 +10,8 @@ echo "Generate root CA"
 certstrap init --passphrase "" --expires "10 years" --common-name "${CA_NAME}"
 
 echo "Create certificate requests for the server and client"
-certstrap request-cert --passphrase "" --key "out/${CA_NAME}.key" --key-bits "4096" --common-name "${SERVICE}_server" --domain "${SERVICE},localhost"
-certstrap request-cert --passphrase "" --key "out/${CA_NAME}.key" --key-bits "4096" --common-name "${SERVICE}_client" --domain "${SERVICE},localhost"
+certstrap request-cert --passphrase "" --key-bits "4096" --common-name "${SERVICE}_server" --domain "${SERVICE},localhost"
+certstrap request-cert --passphrase "" --key-bits "4096" --common-name "${SERVICE}_client" --domain "${SERVICE},localhost"
 
 echo "Sign the certificate requests"
 certstrap sign --passphrase "" --expires "10 years" --CA "$CA_NAME" "${SERVICE}_server"

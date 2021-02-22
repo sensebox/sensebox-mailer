@@ -7,8 +7,6 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-
-	"github.com/honeybadger-io/honeybadger-go"
 )
 
 type MailerJSONResponse struct {
@@ -90,7 +88,7 @@ func (mailer *MailerServer) startHTTPSServer() error {
 	tlsConfig.BuildNameToCertificate()
 	LogInfo("StartHTTPSServer", "built name to certificate")
 
-	http.Handle("/", honeybadger.Handler(mailRequestHandler(mailer.requestHandler)))
+	http.Handle("/", mailRequestHandler(mailer.requestHandler))
 
 	httpServer := &http.Server{
 		Addr:      "0.0.0.0:3924",

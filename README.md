@@ -4,9 +4,8 @@ This project is the mailer used by the [openSenseMap-API](https://github.com/sen
 
 ## Development
 
-- Clone the project into your GOPATH.
-- Install certstrap (`go get -u github.com/square/certstrap`)
-- Install statik (`go get -u github.com/rakyll/statik`)
+This project is written in Go. Useful tools for development
+are certstrap (`go get -u github.com/square/certstrap`) and mailhog (`go get github.com/mailhog/MailHog`).
 
 ### Compilation
 
@@ -14,10 +13,7 @@ This project is the mailer used by the [openSenseMap-API](https://github.com/sen
 
 ### Adding new mail templates
 
-1. Create new html files in `templates`. Ideally named `yourNewTemplate_en.html` or `yourNewTemplate_de.html`. Please always create both files for german (`_de.html`) and english (`_en.html`).
-1. Edit `templates/templates.json` and add your template to the array.
-1. Run `statik -src=templates -f`
-1. Compile the project `go build -o sensebox-mailer cmd/sensebox-mailer/*.go`
+Templates are loaded from repository [https://github.com/sensebox/sensebox-mailer-templates](https://github.com/sensebox/sensebox-mailer-templates).
 
 ### Running
 
@@ -29,13 +25,7 @@ A good mailserver for development and testing is [mailhog](https://github.com/ma
 
 A good starting point for a bash script for development is `mailhog.sh`.
 
-Running this script:
-
-- starts `mailhog` docker container
-- runs statik and compiles all templates
-- compiles the sensebox-mailer go binary
-- exports all necessary env variables
-- runs the sensebox-mailer go binary
+Running this script starts a `mailhog` docker container.
 
 Before running this script its important to run [`genCerts.sh`](#1-generate-server-and-client-certificates).
 
@@ -107,4 +97,7 @@ You should configure the following variables:
 | `SMTP_USER` | the smtp server user |  |
 | `SMTP_PASSWORD` | the smtp server password |  |
 | `FROM_DOMAIN` | the domain you are sending from |  |
-| `HONEYBADGER_APIKEY` | api key for honeybadger error reporting | y |
+| `TEMPLATES_REPOSITORY` | git url of the repository which contains the templates | y |
+| `TEMPLATES_BRANCH` | use this branch of the repository for templates | y |
+| `TEMPLATES_FS_PATH` | path where to clone repository | y |
+| `TEMPLATES_FETCH_INTERVAL` | time interval how often to pull repository. Specify in [go duration](https://golang.org/pkg/time/#ParseDuration) format.  | y |

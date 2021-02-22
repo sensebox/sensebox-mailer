@@ -165,7 +165,7 @@ func (mr *MailRequest) UnmarshalJSON(jsonBytes []byte) error {
 	if err := json.Unmarshal(*request["payload"], &payload); err != nil {
 		return err
 	}
-	templateBytes, err := templ.Execute(payload)
+	templateBytes, err := templ.ConvertAndExecute(payload)
 	if err != nil {
 		return err
 	}
@@ -199,21 +199,10 @@ func (mr *MailRequest) UnmarshalJSON(jsonBytes []byte) error {
 }
 
 func (mailer *MailerServer) Start() error {
-	ctTemplates, err := templates.FromJSON()
-	if err != nil {
-		return err
-	}
-	LogInfo("Start MailerServer", "Imported", ctTemplates, "templates")
-
 	mailer.startMailerDaemon()
 	defer close(mailer.daemon)
 
-	err = mailer.startHTTPSServer()
-	if err != nil {
-		return err
-	}
-
-	return nil
+	return mailer.startHTTPSServer()
 }
 
 func (mailer *MailerServer) sendMail(req MailRequest) error {
