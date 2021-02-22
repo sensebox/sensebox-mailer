@@ -68,7 +68,10 @@ func (templater *Templater) CloneTemplatesFromGitHub() error {
 		cmd := exec.Command("git", "clone", "-b", templater.RepositoryBranch, templater.RepositoryGitURL, templater.RepositoryFsPath)
 		cmd.Stderr = os.Stderr
 		fmt.Printf("Executing %v\n", cmd.Args)
-		return cmd.Run()
+		err := cmd.Run()
+		if err != nil {
+			return err
+		}
 	}
 	return templater.slurpTemplates(templater.RepositoryFsPath)
 }
