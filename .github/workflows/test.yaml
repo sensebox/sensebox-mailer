@@ -1,0 +1,80 @@
+name: Build and test mailer
+
+on:
+  push:
+    branches:
+    - master
+    - development
+    - cleanup
+  pull_request:
+    branches:
+    - master
+    - development
+    - ci-stuff
+
+jobs:
+  test-mailer:
+    name: Test sensebox-mailer
+    runs-on: ubuntu-20.04
+    steps:
+    - uses: actions/checkout@v2
+
+    - uses: webiny/action-post-run@1.0.0
+      id: docker-logs
+      with:
+        command: docker logs mailer
+
+    # no need to setup go or docker, ubuntu-20.04 has
+    # reasonable versions installed ok for our use case
+    - run: |
+        set -e
+        export GOPATH=${HOME}/go
+
+        GO111MODULE=on go get github.com/mailhog/MailHog@v1.0.1
+        GO111MODULE=on go get github.com/square/certstrap@7cda9d4
+
+        export PATH=${PATH}:${GOPATH}/bin
+
+        docker build -t ci-mailer .
+
+        ./genCerts.sh
+
+        MailHog &
+        MAILHOG_PID=$!
+
+        export SENSEBOX_MAILER_SERVER_CERT=$(cat out/mailer_server.crt)
+        export SENSEBOX_MAILER_SERVER_KEY=$(cat out/mailer_server.key)
+        export SENSEBOX_MAILER_CA_CERT=$(cat out/openSenseMapCA.crt)
+        export SENSEBOX_MAILER_SMTP_SERVER=localhost
+        export SENSEBOX_MAILER_SMTP_PORT=1025
+        export SENSEBOX_MAILER_SMTP_USER=smtpuser
+        export SENSEBOX_MAILER_SMTP_PASSWORD=smtppassword
+        export SENSEBOX_MAILER_FROM_DOMAIN=sensebox.de
+        export SENSEBOX_MAILER_FROM_NAME_PREFIX=senseBox
+        export SENSEBOX_MAILER_TEMPLATES_FETCH_INTERVAL=5s
+
+        docker run \
+          --detach \
+          --name=mailer \
+          --network=host \
+          -e SENSEBOX_MAILER_SERVER_CERT \
+          -e SENSEBOX_MAILER_SERVER_KEY \
+          -e SENSEBOX_MAILER_CA_CERT \
+          -e SENSEBOX_MAILER_SMTP_SERVER \
+          -e SENSEBOX_MAILER_SMTP_PORT \
+          -e SENSEBOX_MAILER_SMTP_USER \
+          -e SENSEBOX_MAILER_SMTP_PASSWORD \
+          -e SENSEBOX_MAILER_FROM_DOMAIN \
+          -e SENSEBOX_MAILER_FROM_NAME_PREFIX \
+          -e SENSEBOX_MAILER_TEMPLATES_FETCH_INTERVAL \
+          ci-mailer
+
+        echo "Sleeping 15 seconds to test git pull"
+
+        sleep 15
+
+        node test/
+
+        docker stop mailer
+        docker rm mailer
+        kill $MAILHOG_PID

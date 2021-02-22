@@ -1,124 +1,136 @@
 package templates
 
 import (
-	"bytes"
-	"encoding/json"
 	"fmt"
-	"html/template"
-	"io/ioutil"
-	"net/http"
+	"os"
+	"os/exec"
+	"path/filepath"
 	"strings"
+	"time"
 
-	"github.com/rakyll/statik/fs"
-	_ "github.com/sensebox/sensebox-mailer/statik"
+	markdowntemplates "github.com/sensebox/sensebox-mailer-templates"
 )
 
-var statikFS http.FileSystem
-var theTemplates []LocalizedTemplate
-
-type LocalizedTemplate struct {
-	Language     string `json:"language"`
-	TemplateName string `json:"template"`
-	FromName     string `json:"fromName"`
-	Subject      string `json:"subject"`
-	Template     *template.Template
+type Templater struct {
+	RepositoryGitURL string
+	RepositoryBranch string
+	RepositoryFsPath string
+	RepositoryPullInterval time.Duration
+	TheTemplates []markdowntemplates.Template
 }
 
-func (td *LocalizedTemplate) UnmarshalJSON(jsonBytes []byte) error {
-	var t map[string]string
+var theTemplater *Templater
 
-	if err := json.Unmarshal(jsonBytes, &t); err != nil {
-		return err
-	}
-	if err := initStatikFS(); err != nil {
-		return err
+func NewTemplater(RepositoryGitURL, RepositoryBranch, RepositoryFsPath string, RepositoryPullInterval time.Duration) error {
+
+	templater := Templater{
+		RepositoryGitURL: RepositoryGitURL,
+		RepositoryBranch: RepositoryBranch,
+		RepositoryFsPath: RepositoryFsPath,
+		RepositoryPullInterval: RepositoryPullInterval,
 	}
 
-	f, err := statikFS.Open(fmt.Sprintf("/%s_%s.html", t["template"], t["language"]))
+	theTemplater = &templater
+
+	err := templater.CloneTemplatesFromGitHub()
 	if err != nil {
 		return err
 	}
-	templateBytes, err := ioutil.ReadAll(f)
-	if err != nil {
-		return err
-	}
 
-	template, err := template.New(t["template"]).Parse(string(templateBytes))
-	if err != nil {
-		return err
-	}
-	template.Option("missingkey=error")
-
-	*td = LocalizedTemplate{
-		t["language"],
-		t["template"],
-		t["fromName"],
-		t["subject"],
-		template,
-	}
-
+	// Start routine to fetch latest templates
+	go templater.FetchLatestTemplatesFromGithub()
 	return nil
 }
 
-func initStatikFS() error {
-	sFS, err := fs.New()
+func (templater *Templater) FetchLatestTemplatesFromGithub() {
+	ticker := time.NewTicker(templater.RepositoryPullInterval)
+
+	for range ticker.C {
+		cmd := exec.Command("git", "pull", "origin", templater.RepositoryBranch)
+		cmd.Dir = templater.RepositoryFsPath
+		cmd.Stderr = os.Stderr
+		fmt.Printf("Executing %v\n", cmd.Args)
+		err := cmd.Run()
+		if err != nil {
+			fmt.Printf("Error pulling git repository %v\n", err)
+		}
+		err = templater.slurpTemplates(templater.RepositoryFsPath)
+		if err != nil {
+			fmt.Printf("Error reading templates %v\n", err)
+		}
+	}
+}
+
+func (templater *Templater) CloneTemplatesFromGitHub() error {
+	// Check if templates folder exists
+	if _, err := os.Stat(templater.RepositoryFsPath); os.IsNotExist(err) {
+		fmt.Println("Templates do not exists; Go and clone repository")
+		cmd := exec.Command("git", "clone", "-b", templater.RepositoryBranch, templater.RepositoryGitURL, templater.RepositoryFsPath)
+		cmd.Stderr = os.Stderr
+		fmt.Printf("Executing %v\n", cmd.Args)
+		err := cmd.Run()
+		if err != nil {
+			return err
+		}
+	}
+	return templater.slurpTemplates(templater.RepositoryFsPath)
+}
+
+func (templater *Templater) slurpTemplates(templatesRepositoryFsPath string) error {
+
+	templates := []markdowntemplates.Template{}
+
+	err := filepath.Walk(templatesRepositoryFsPath+"/templates", func(path string, info os.FileInfo, e error) error {
+		if e != nil {
+			return e
+		}
+
+		// check if it is a regular file (not dir)
+		if info.Mode().IsRegular() && strings.HasSuffix(path, ".md") {
+			file, err := os.Open(path)
+			if err != nil {
+				return err
+			}
+
+			tpls, err := markdowntemplates.Slurp(file)
+			if err != nil {
+				return err
+			}
+			templates = append(templates, tpls...)
+
+		}
+
+		return nil
+	})
+
 	if err != nil {
 		return err
 	}
-	statikFS = sFS
+
+	if len(templates) == 0 {
+		return fmt.Errorf("No templates imported from template repository")
+	}
+
+	templater.TheTemplates = templates
+
 	return nil
-}
-
-// FromJSON initializes the templates from the templates/templates.json file
-func FromJSON() (int, error) {
-	if err := initStatikFS(); err != nil {
-		return 0, err
-	}
-
-	f, err := statikFS.Open("/templates.json")
-	if err != nil {
-		return 0, err
-	}
-	jsonBytes, err := ioutil.ReadAll(f)
-
-	if err != nil {
-		return 0, err
-	}
-	f.Close()
-
-	err = json.Unmarshal(jsonBytes, &theTemplates)
-	if err != nil {
-		return 0, err
-	}
-
-	return len(theTemplates), nil
 }
 
 // GetTemplate returns the template matching the templateName and the language
-func GetTemplate(templateName, language string) (LocalizedTemplate, error) {
-	if theTemplates == nil {
-		_, err := FromJSON()
+func GetTemplate(templateName, language string) (markdowntemplates.Template, error) {
+	if theTemplater == nil {
+		err := fmt.Errorf("Templater is not available")
 		if err != nil {
-			return LocalizedTemplate{}, err
+			return markdowntemplates.Template{}, err
 		}
 	}
 
 	// check for direct or prefix (de_DE -> de) match
-	for _, template := range theTemplates {
-		if template.TemplateName == templateName && (template.Language == language || strings.HasPrefix(language, template.Language) == true) {
+	for _, template := range theTemplater.TheTemplates {
+		if template.Name == templateName && (template.Language == language || strings.HasPrefix(language, template.Language) == true) {
 			return template, nil
 		}
 	}
 
-	return LocalizedTemplate{}, fmt.Errorf("Template not available (template: '%s', language: '%s')", templateName, language)
-}
-
-// Execute executes the Template, filling it with the values from the payload
-func (td LocalizedTemplate) Execute(payload interface{}) ([]byte, error) {
-	var buffer bytes.Buffer
-	err := td.Template.Execute(&buffer, payload)
-	if err != nil {
-		return []byte{}, err
-	}
-	return buffer.Bytes(), nil
+	return markdowntemplates.Template{}, fmt.Errorf("Template not available (template: '%s', language: '%s')", templateName, language)
 }

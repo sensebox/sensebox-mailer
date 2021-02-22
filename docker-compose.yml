@@ -29,3 +29,7 @@ services:
       SENSEBOX_MAILER_SMTP_USER: <your smtp server user>
       SENSEBOX_MAILER_SMTP_PASSWORD: <your smtp server password>
       SENSEBOX_MAILER_FROM_DOMAIN: <the domain you want your mails to originate from>
+      SENSEBOX_MAILER_TEMPLATES_REPOSITORY: <templates repository git url>
+      SENSEBOX_MAILER_TEMPLATES_BRANCH: <branch name>
+      SENSEBOX_MAILER_TEMPLATES_FS_PATH: <templates path within the branch>
+      SENSEBOX_MAILER_TEMPLATES_FETCH_INTERVAL: <interval to fetch templates in ms >
