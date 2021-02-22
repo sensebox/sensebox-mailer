@@ -49,14 +49,14 @@ func (templater *Templater) FetchLatestTemplatesFromGithub() {
 		cmd := exec.Command("git", "pull", "origin", templater.RepositoryBranch)
 		cmd.Dir = templater.RepositoryFsPath
 		cmd.Stderr = os.Stderr
-		fmt.Printf("Executing %v", cmd.Args)
+		fmt.Printf("Executing %v\n", cmd.Args)
 		err := cmd.Run()
 		if err != nil {
-			fmt.Printf("Error pulling git repository %v", err)
+			fmt.Printf("Error pulling git repository %v\n", err)
 		}
 		err = templater.slurpTemplates(templater.RepositoryFsPath)
 		if err != nil {
-			fmt.Printf("Error reading templates %v", err)
+			fmt.Printf("Error reading templates %v\n", err)
 		}
 	}
 }
