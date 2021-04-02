@@ -52,17 +52,17 @@ func initConfigFromEnv() (caCert, serverCert, serverKey []byte, smtpServer, smtp
 		errors = append(errors, fromDomainErr)
 	}
 
-	repository, repositoryErr := getStringFromEnvWithDefault("TEMPLATES_REPOSITORY","https://github.com/sensebox/sensebox-mailer-templates.git")
+	repository, repositoryErr := getStringFromEnvWithDefault("TEMPLATES_REPOSITORY", "https://github.com/sensebox/sensebox-mailer-templates.git")
 	if repositoryErr != nil {
 		errors = append(errors, repositoryErr)
 	}
 
-	branch, branchErr := getStringFromEnvWithDefault("TEMPLATES_BRANCH","main")
+	branch, branchErr := getStringFromEnvWithDefault("TEMPLATES_BRANCH", "main")
 	if branchErr != nil {
 		errors = append(errors, branchErr)
 	}
 
-	fsPath, fsPathErr := getStringFromEnvWithDefault("TEMPLATES_FS_PATH","./mailer-templates")
+	fsPath, fsPathErr := getStringFromEnvWithDefault("TEMPLATES_FS_PATH", "./mailer-templates")
 	if fsPathErr != nil {
 		errors = append(errors, fsPathErr)
 	}

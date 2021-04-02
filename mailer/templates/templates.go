@@ -12,11 +12,11 @@ import (
 )
 
 type Templater struct {
-	RepositoryGitURL string
-	RepositoryBranch string
-	RepositoryFsPath string
+	RepositoryGitURL       string
+	RepositoryBranch       string
+	RepositoryFsPath       string
 	RepositoryPullInterval time.Duration
-	TheTemplates []markdowntemplates.Template
+	TheTemplates           []markdowntemplates.Template
 }
 
 var theTemplater *Templater
@@ -24,9 +24,9 @@ var theTemplater *Templater
 func NewTemplater(RepositoryGitURL, RepositoryBranch, RepositoryFsPath string, RepositoryPullInterval time.Duration) error {
 
 	templater := Templater{
-		RepositoryGitURL: RepositoryGitURL,
-		RepositoryBranch: RepositoryBranch,
-		RepositoryFsPath: RepositoryFsPath,
+		RepositoryGitURL:       RepositoryGitURL,
+		RepositoryBranch:       RepositoryBranch,
+		RepositoryFsPath:       RepositoryFsPath,
 		RepositoryPullInterval: RepositoryPullInterval,
 	}
 
@@ -46,7 +46,7 @@ func (templater *Templater) FetchLatestTemplatesFromGithub() {
 	ticker := time.NewTicker(templater.RepositoryPullInterval)
 
 	for range ticker.C {
-		cmd := exec.Command("git", "pull", "origin", templater.RepositoryBranch)
+		cmd := exec.Command("git", "pull", "origin", templater.RepositoryBranch) // #nosec
 		cmd.Dir = templater.RepositoryFsPath
 		cmd.Stderr = os.Stderr
 		fmt.Printf("Executing %v\n", cmd.Args)
@@ -65,7 +65,7 @@ func (templater *Templater) CloneTemplatesFromGitHub() error {
 	// Check if templates folder exists
 	if _, err := os.Stat(templater.RepositoryFsPath); os.IsNotExist(err) {
 		fmt.Println("Templates do not exists; Go and clone repository")
-		cmd := exec.Command("git", "clone", "-b", templater.RepositoryBranch, templater.RepositoryGitURL, templater.RepositoryFsPath)
+		cmd := exec.Command("git", "clone", "-b", templater.RepositoryBranch, templater.RepositoryGitURL, templater.RepositoryFsPath) // #nosec
 		cmd.Stderr = os.Stderr
 		fmt.Printf("Executing %v\n", cmd.Args)
 		err := cmd.Run()
@@ -127,7 +127,7 @@ func GetTemplate(templateName, language string) (markdowntemplates.Template, err
 
 	// check for direct or prefix (de_DE -> de) match
 	for _, template := range theTemplater.TheTemplates {
-		if template.Name == templateName && (template.Language == language || strings.HasPrefix(language, template.Language) == true) {
+		if template.Name == templateName && strings.HasPrefix(language, template.Language) {
 			return template, nil
 		}
 	}

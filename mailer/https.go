@@ -5,6 +5,7 @@ import (
 	"crypto/x509"
 	"encoding/json"
 	"fmt"
+	"io"
 	"log"
 	"net/http"
 )
@@ -17,20 +18,34 @@ type MailerJSONResponse struct {
 
 type mailRequestHandler func(http.ResponseWriter, *http.Request) (int, error)
 
+func (fn mailRequestHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	if status, err := fn(w, r); err != nil {
+		LogInfo("ServeHTTP", "Error:", err)
+		http.Error(w, fmt.Sprintf("%s: %s", http.StatusText(status), err.Error()), status)
+	}
+}
+
 func (mailer *MailerServer) requestHandler(w http.ResponseWriter, req *http.Request) (int, error) {
 	LogInfo("requestHandler", "incoming request")
-	decoder := json.NewDecoder(req.Body)
+
+	reqBytes, err := io.ReadAll(req.Body)
+	if err != nil {
+		LogInfo("requestHandler", "Error reading request body:", err)
+		return http.StatusBadRequest, fmt.Errorf("Error reading request body: %w", err)
+	}
+	defer req.Body.Close()
+
 	var parsedRequests []MailRequest
-	err := decoder.Decode(&parsedRequests)
+	err = json.Unmarshal(reqBytes, &parsedRequests)
 	if err != nil {
 		LogInfo("requestHandler", "Error decoding JSON payload:", err)
-		return http.StatusBadRequest, err
+		return http.StatusBadRequest, fmt.Errorf("Error decoding JSON payload: %w", err)
 	}
 
 	// init data structure for response
 	var jsonResponse []MailerJSONResponse
 
-	hasError := false
+	httpCode := http.StatusOK
 
 	for _, request := range parsedRequests {
 		currResponse := MailerJSONResponse{
@@ -42,24 +57,15 @@ func (mailer *MailerServer) requestHandler(w http.ResponseWriter, req *http.Requ
 			LogInfo("SendMail", "Error:", request.ID, err)
 			currResponse.Status = "error"
 			currResponse.Error = err.Error()
-			hasError = true
+			httpCode = http.StatusBadRequest
 		}
 		jsonResponse = append(jsonResponse, currResponse)
 	}
 
-	jsonBytes, err := json.Marshal(jsonResponse)
-	if err != nil {
-		return http.StatusInternalServerError, err
-	}
-
-	if hasError == true {
-		w.WriteHeader(http.StatusBadRequest)
-	}
 	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(httpCode)
 
-	w.Write(jsonBytes)
-
-	return http.StatusOK, nil
+	return httpCode, json.NewEncoder(w).Encode(jsonResponse)
 }
 
 func (mailer *MailerServer) startHTTPSServer() error {
@@ -100,11 +106,4 @@ func (mailer *MailerServer) startHTTPSServer() error {
 	log.Fatal(httpServer.ListenAndServeTLS("", ""))
 
 	return nil
-}
-
-func (fn mailRequestHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	if status, err := fn(w, r); err != nil {
-		LogInfo("ServeHTTP", "Error:", err)
-		http.Error(w, fmt.Sprintf("%s: %s", http.StatusText(status), err.Error()), status)
-	}
 }

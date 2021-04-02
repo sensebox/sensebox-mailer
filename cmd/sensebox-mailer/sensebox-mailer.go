@@ -19,11 +19,11 @@ var (
 func logStartup() {
 	var timestamp string
 
-	iTs, err := strconv.ParseInt(ts, 10, 64)
-	if err != nil {
+	if iTs, err := strconv.ParseInt(ts, 10, 64); err != nil {
 		timestamp = fmt.Sprintf("??? (%s)", ts)
+	} else {
+		timestamp = time.Unix(iTs, 0).UTC().Format(time.RFC3339)
 	}
-	timestamp = time.Unix(iTs, 0).UTC().Format(time.RFC3339)
 
 	fmt.Printf("sensebox-mailer startup. Version: %s %s %s\n", branch, timestamp, hash)
 }
