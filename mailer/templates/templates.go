@@ -12,11 +12,11 @@ import (
 )
 
 type Templater struct {
-	RepositoryGitURL string
-	RepositoryBranch string
-	RepositoryFsPath string
+	RepositoryGitURL       string
+	RepositoryBranch       string
+	RepositoryFsPath       string
 	RepositoryPullInterval time.Duration
-	TheTemplates []markdowntemplates.Template
+	TheTemplates           []markdowntemplates.Template
 }
 
 var theTemplater *Templater
@@ -24,9 +24,9 @@ var theTemplater *Templater
 func NewTemplater(RepositoryGitURL, RepositoryBranch, RepositoryFsPath string, RepositoryPullInterval time.Duration) error {
 
 	templater := Templater{
-		RepositoryGitURL: RepositoryGitURL,
-		RepositoryBranch: RepositoryBranch,
-		RepositoryFsPath: RepositoryFsPath,
+		RepositoryGitURL:       RepositoryGitURL,
+		RepositoryBranch:       RepositoryBranch,
+		RepositoryFsPath:       RepositoryFsPath,
 		RepositoryPullInterval: RepositoryPullInterval,
 	}
 
