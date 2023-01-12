@@ -4,13 +4,9 @@ on:
   push:
     branches:
     - master
-    - development
-    - cleanup
   pull_request:
     branches:
     - master
-    - development
-    - ci-stuff
 
 jobs:
   test-mailer:
