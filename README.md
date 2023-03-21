@@ -1,5 +1,7 @@
 # sensebox-mailer
 
+> ℹ️ This repository is the old openSenseMap mailer and is deprecated and archived. New mailer can be found here: https://github.com/openSenseMap/mailer
+
 This project is the mailer used by the [openSenseMap-API](https://github.com/sensebox/openSenseMap-API) and other services in the openSenseMap stack. It is written in Golang and thus can be compiled into a single binary.
 
 ## Development
